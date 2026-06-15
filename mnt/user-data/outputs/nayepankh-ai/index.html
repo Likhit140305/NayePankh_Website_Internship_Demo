@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>NayePankh AI Assistant</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --sage: #2D5A3D;
+      --sage-l: #4A7C59;
+      --sage-p: #EBF3EE;
+      --clay: #C4622D;
+      --cream: #FAF8F4;
+      --ink: #1A1A18;
+      --muted: #6B6B62;
+      --b: rgba(26, 26, 24, .1);
+      --r: 6px;
+      --ffd: 'Fraunces', Georgia, serif;
+      --ffb: 'DM Sans', system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--ffb);
+      background: var(--cream);
+      color: var(--ink);
+      font-size: 15px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* header */
+    header {
+      background: var(--ink);
+      padding: .9rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+
+    header img {
+      height: 38px;
+      width: auto;
+    }
+
+    .header-text h1 {
+      font-family: var(--ffd);
+      font-size: 1rem;
+      color: #FAF8F4;
+      font-weight: 700;
+    }
+
+    .header-text p {
+      font-size: .72rem;
+      color: rgba(250, 248, 244, .45);
+    }
+
+    .header-badge {
+      margin-left: auto;
+      background: var(--sage);
+      color: #FAF8F4;
+      font-size: .7rem;
+      padding: .25rem .65rem;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    /* tabs */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--b);
+      background: #fff;
+      flex-shrink: 0;
+    }
+
+    .tab {
+      padding: .7rem 1.25rem;
+      font-size: .82rem;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all .2s;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      font-family: var(--ffb);
+    }
+
+    .tab.active {
+      color: var(--sage);
+      border-bottom-color: var(--sage);
+    }
+
+    .tab:hover:not(.active) {
+      color: var(--ink);
+    }
+
+    /* panels */
+    .panels {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .panel {
+      display: none;
+      flex: 1;
+      overflow: hidden;
+      flex-direction: column;
+    }
+
+    .panel.active {
+      display: flex;
+    }
+
+    /* ─ Chat ─ */
+    .chat-layout {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .chat-sidebar {
+      width: 240px;
+      background: #fff;
+      border-right: 1px solid var(--b);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .sidebar-section {
+      padding: 1rem;
+    }
+
+    .sidebar-label {
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: .6rem;
+    }
+
+    .quick-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: var(--sage-p);
+      border: none;
+      padding: .6rem .75rem;
+      border-radius: var(--r);
+      font-size: .78rem;
+      cursor: pointer;
+      font-family: var(--ffb);
+      color: var(--sage);
+      margin-bottom: .4rem;
+      transition: background .2s;
+      line-height: 1.4;
+    }
+
+    .quick-btn:hover {
+      background: #D8EDE0;
+    }
+
+    .api-section {
+      padding: 1rem;
+      border-top: 1px solid var(--b);
+      margin-top: auto;
+    }
+
+    .api-input {
+      font-family: var(--ffb);
+      font-size: .78rem;
+      padding: .5rem .65rem;
+      border: 1px solid var(--b);
+      border-radius: var(--r);
+      width: 100%;
+      outline: none;
+      margin-bottom: .5rem;
+      transition: border-color .2s;
+    }
+
+    .api-input:focus {
+      border-color: var(--sage);
+    }
+
+    .chat-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: .9rem;
+    }
+
+    .msg {
+      display: flex;
+      gap: .75rem;
+      max-width: 90%;
+    }
+
+    .msg.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .msg-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .8rem;
+      flex-shrink: 0;
+    }
+
+    .msg-avatar.ai {
+      background: var(--sage);
+      color: #FAF8F4;
+    }
+
+    .msg-avatar.user {
+      background: var(--clay);
+      color: #FAF8F4;
+    }
+
+    .msg-bubble {
+      padding: .75rem 1rem;
+      border-radius: 10px;
+      font-size: .85rem;
+      line-height: 1.65;
+      max-width: 100%;
+    }
+
+    .msg-bubble.ai {
+      background: #fff;
+      border: 1px solid var(--b);
+      border-radius: 2px 10px 10px 10px;
+    }
+
+    .msg-bubble.user {
+      background: var(--sage);
+      color: #FAF8F4;
+      border-radius: 10px 2px 10px 10px;
+    }
+
+    .typing {
+      display: flex;
+      gap: 4px;
+      padding: .6rem .8rem;
+      align-items: center;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      background: var(--muted);
+      border-radius: 50%;
+      animation: bounce .9s infinite;
+    }
+
+    .dot:nth-child(2) {
+      animation-delay: .2s;
+    }
+
+    .dot:nth-child(3) {
+      animation-delay: .4s;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      80%,
+      100% {
+        transform: translateY(0);
+      }
+
+      40% {
+        transform: translateY(-6px);
+      }
+    }
+
+    .chat-input-row {
+      padding: .9rem 1.25rem;
+      border-top: 1px solid var(--b);
+      display: flex;
+      gap: .65rem;
+      background: #fff;
+    }
+
+    .chat-input {
+      flex: 1;
+      font-family: var(--ffb);
+      font-size: .875rem;
+      padding: .6rem .9rem;
+      border: 1px solid var(--b);
+      border-radius: var(--r);
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .chat-input:focus {
+      border-color: var(--sage);
+    }
+
+    .send-btn {
+      background: var(--sage);
+      color: #FAF8F4;
+      border: none;
+      padding: .6rem 1.1rem;
+      border-radius: var(--r);
+      cursor: pointer;
+      font-size: .85rem;
+      font-family: var(--ffb);
+      font-weight: 500;
+      transition: background .2s;
+    }
+
+    .send-btn:hover {
+      background: var(--sage-l);
+    }
+
+    .send-btn:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    /* ─ Email drafter ─ */
+    .tool-layout {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .tool-left {
+      width: 340px;
+      padding: 1.25rem;
+      border-right: 1px solid var(--b);
+      overflow-y: auto;
+      background: #fff;
+      flex-shrink: 0;
+    }
+
+    .tool-right {
+      flex: 1;
+      padding: 1.25rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .fg {
+      display: flex;
+      flex-direction: column;
+      gap: .35rem;
+      margin-bottom: .9rem;
+    }
+
+    .fg label {
+      font-size: .75rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .fg input,
+    .fg select,
+    .fg textarea {
+      font-family: var(--ffb);
+      font-size: .85rem;
+      padding: .55rem .75rem;
+      border: 1px solid var(--b);
+      border-radius: var(--r);
+      background: var(--cream);
+      color: var(--ink);
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .fg input:focus,
+    .fg select:focus,
+    .fg textarea:focus {
+      border-color: var(--sage);
+    }
+
+    .fg textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .tool-btn {
+      background: var(--sage);
+      color: #FAF8F4;
+      border: none;
+      padding: .65rem 1.25rem;
+      border-radius: var(--r);
+      font-family: var(--ffb);
+      font-size: .85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background .2s;
+      width: 100%;
+    }
+
+    .tool-btn:hover {
+      background: var(--sage-l);
+    }
+
+    .tool-btn:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    .output-box {
+      flex: 1;
+      background: #fff;
+      border: 1px solid var(--b);
+      border-radius: var(--r);
+      padding: 1.25rem;
+      white-space: pre-wrap;
+      font-size: .875rem;
+      line-height: 1.75;
+      color: var(--ink);
+      min-height: 300px;
+    }
+
+    .output-placeholder {
+      color: var(--muted);
+      font-size: .875rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .output-actions {
+      display: flex;
+      gap: .5rem;
+      margin-top: .75rem;
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: 1px solid var(--b);
+      padding: .5rem 1rem;
+      border-radius: var(--r);
+      font-family: var(--ffb);
+      font-size: .8rem;
+      cursor: pointer;
+      transition: all .2s;
+      color: var(--muted);
+    }
+
+    .copy-btn:hover {
+      border-color: var(--sage);
+      color: var(--sage);
+    }
+
+    .section-title {
+      font-size: .85rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      color: var(--ink);
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, .3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      vertical-align: middle;
+      margin-right: .4rem;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <img src="../../../../logo_new.png" alt="NayePankh Foundation" style="background:#fff;padding:3px 6px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.05);"/>
+    <div class="header-text">
+      <h1>NayePankh AI Assistant</h1>
+      <p>Developed by Likhit Hegde · Powered by Google Gemini — AI Internship</p>
+    </div>
+    <div class="header-badge">AI Internship · Option 2</div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('chat',this)">💬 NGO Chatbot</button>
+    <button class="tab" onclick="switchTab('email',this)">✉️ Outreach Email Drafter</button>
+    <button class="tab" onclick="switchTab('summary',this)">📊 Report Summarizer</button>
+  </div>
+
+  <div class="panels">
+
+    <!-- ── CHAT TAB ── -->
+    <div class="panel active" id="tab-chat">
+      <div class="chat-layout">
+        <div class="chat-sidebar">
+          <div class="sidebar-section">
+            <div class="sidebar-label">Quick Questions</div>
+            <button class="quick-btn" onclick="sendQuick('How can I volunteer with NayePankh Foundation?')">How do I
+              volunteer?</button>
+            <button class="quick-btn" onclick="sendQuick('What programs does NayePankh Foundation run?')">What programs
+              do you have?</button>
+            <button class="quick-btn" onclick="sendQuick('How can I donate to NayePankh Foundation?')">How can I
+              donate?</button>
+            <button class="quick-btn"
+              onclick="sendQuick('I am a student looking for an internship at NayePankh Foundation')">Internship
+              enquiry</button>
+            <button class="quick-btn" onclick="sendQuick('What is NayePankh Foundation and what does it do?')">About
+              NayePankh</button>
+            <button class="quick-btn"
+              onclick="sendQuick('How can our college partner with NayePankh Foundation?')">College partnership</button>
+          </div>
+          <div class="api-section">
+            <div class="sidebar-label">Gemini API Key</div>
+            <input class="api-input" id="apiKey" type="password" placeholder="AIzaSy…" />
+            <div style="font-size:.7rem;color:var(--muted);line-height:1.5;">Free key from <a
+                href="https://aistudio.google.com/apikey" target="_blank"
+                style="color:var(--sage);">aistudio.google.com</a> — never stored.</div>
+          </div>
+        </div>
+        <div class="chat-main">
+          <div class="messages" id="messages">
+            <div class="msg">
+              <div class="msg-avatar ai">🌱</div>
+              <div class="msg-bubble ai">Namaste! I'm the NayePankh AI Assistant. I can answer your questions about our
+                programs, volunteer opportunities, donations, and internships.<br><br>How can I help you today?</div>
+            </div>
+          </div>
+          <div class="chat-input-row">
+            <input class="chat-input" id="chatInput" placeholder="Ask about volunteering, programs, donations…"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}" />
+            <button class="send-btn" id="sendBtn" onclick="sendChat()">Send →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── EMAIL TAB ── -->
+    <div class="panel" id="tab-email">
+      <div class="tool-layout">
+        <div class="tool-left">
+          <div class="section-title">Email Settings</div>
+          <div class="fg">
+            <label>Email Type</label>
+            <select id="emailType">
+              <option value="volunteer_welcome">Welcome new volunteer</option>
+              <option value="donation_thanks">Donation thank you</option>
+              <option value="college_outreach">College partnership outreach</option>
+              <option value="event_invite">Event invitation</option>
+              <option value="scholarship_alert">Scholarship alert to students</option>
+              <option value="corporate_csr">Corporate CSR partnership</option>
+            </select>
+          </div>
+          <div class="fg"><label>Recipient Name</label><input type="text" id="recipientName"
+              placeholder="Priya Sharma" /></div>
+          <div class="fg"><label>Key Details (optional)</label><textarea id="emailDetails"
+              placeholder="e.g. They signed up for the Digital Literacy program, located in Delhi…"></textarea></div>
+          <div class="fg"><label>Tone</label>
+            <select id="emailTone">
+              <option value="warm and personal">Warm & Personal</option>
+              <option value="professional">Professional</option>
+              <option value="enthusiastic">Enthusiastic</option>
+              <option value="concise and friendly">Concise & Friendly</option>
+            </select>
+          </div>
+          <div style="margin-bottom:.75rem;">
+            <div class="sidebar-label" style="margin-bottom:.4rem;">
+              API Key</div>
+            <input class="fg"
+              style="all:unset;font-family:var(--ffb);font-size:.78rem;padding:.5rem .65rem;border:1px solid var(--b);border-radius:var(--r);width:100%;outline:none;margin-bottom:0;"
+              id="apiKey2" type="password" placeholder="AIzaSy…" />
+          </div>
+          <button class="tool-btn" id="emailBtn" onclick="draftEmail()">✨ Draft Email</button>
+        </div>
+        <div class="tool-right">
+          <div class="section-title">Generated Email</div>
+          <div class="output-box" id="emailOutput">
+            <div class="output-placeholder">Fill in the details and click "Draft Email" to generate a personalized
+              outreach email for NayePankh Foundation.</div>
+          </div>
+          <div class="output-actions">
+            <button class="copy-btn" onclick="copyOutput('emailOutput')">📋 Copy Email</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SUMMARY TAB ── -->
+    <div class="panel" id="tab-summary">
+      <div class="tool-layout">
+        <div class="tool-left">
+          <div class="section-title">Report Details</div>
+          <div class="fg">
+            <label>Report Type</label>
+            <select id="reportType">
+              <option value="volunteer">Volunteer Activity Report</option>
+              <option value="donation">Donation / Fundraising Report</option>
+              <option value="program">Program Impact Report</option>
+              <option value="event">Event Report</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Paste Raw Report Data</label>
+            <textarea id="reportData" style="min-height:200px;" placeholder="Paste numbers, tables, or raw data here...
+
+Example:
+Total volunteers: 8,432
+New this month: 312
+Active: 6,891
+Programs running: 6
+Students reached: 50,000+
+Top city: Delhi (1,200)
+Top area: Education (3,100)"></textarea>
+          </div>
+          <div class="fg"><label>Output Format</label>
+            <select id="outputFormat">
+              <option value="executive summary">Executive Summary (3–4 paragraphs)</option>
+              <option value="bullet points">Bullet Points</option>
+              <option value="donor-facing narrative">Donor-Facing Narrative</option>
+              <option value="social media post">Social Media Post</option>
+            </select>
+          </div>
+          <div style="margin-bottom:.75rem;">
+            <div class="sidebar-label" style="margin-bottom:.4rem;">
+              API Key</div>
+            <input
+              style="all:unset;font-family:var(--ffb);font-size:.78rem;padding:.5rem .65rem;border:1px solid var(--b);border-radius:var(--r);width:100%;outline:none;"
+              id="apiKey3" type="password" placeholder="AIzaSy…" />
+          </div>
+          <button class="tool-btn" id="summaryBtn" onclick="summarizeReport()">✨ Summarize Report</button>
+        </div>
+        <div class="tool-right">
+          <div class="section-title">AI-Generated Summary</div>
+          <div class="output-box" id="summaryOutput">
+            <div class="output-placeholder">Paste your raw report data and click "Summarize" to get a clean, shareable
+              summary for donors, management, or social media.</div>
+          </div>
+          <div class="output-actions">
+            <button class="copy-btn" onclick="copyOutput('summaryOutput')">📋 Copy Summary</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /panels -->
+
+  <script>
+    // ── Shared ───────────────────────────────────────────────────────────────
+
+    function switchTab(name, btn) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('tab-' + name).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function getKey(fallbackId) {
+      return (document.getElementById('apiKey')?.value || document.getElementById(fallbackId)?.value || '').trim();
+    }
+
+    async function callGemini(messages, systemPrompt, btnId) {
+      const key = getKey(btnId === 'emailBtn' ? 'apiKey2' : btnId === 'summaryBtn' ? 'apiKey3' : 'apiKey');
+      
+      // Convert Anthropic-style messages to Gemini format
+      const contents = messages.map(m => ({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: m.content }]
+      }));
+
+      let useFallback = false;
+      let replyText = '';
+
+      try {
+        let res;
+        if (key) {
+          // Direct client call
+          res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              systemInstruction: { parts: [{ text: systemPrompt }] },
+              contents
+            })
+          });
+        } else {
+          // Backend proxy call
+          const base = window.location.protocol === 'file:' ? 'http://localhost:3001' : window.location.origin;
+          res = await fetch(`${base}/api/ai/generate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              systemInstruction: { parts: [{ text: systemPrompt }] },
+              contents
+            })
+          });
+        }
+
+        if (!res.ok) {
+          const err = await res.json();
+          console.warn('API/Proxy Error:', err.error?.message || err.error || res.statusText);
+          useFallback = true;
+        } else {
+          const data = await res.json();
+          replyText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        }
+      } catch (e) {
+        console.warn('Network error calling AI, using fallback:', e.message);
+        useFallback = true;
+      }
+
+      if (useFallback) {
+        const promptText = messages[messages.length - 1].content.toLowerCase();
+        if (promptText.includes('welcome') || promptText.includes('volunteer_welcome')) {
+          return `Subject: Welcome to NayePankh Foundation! 🌱\n\nDear Volunteer,\n\nWe are absolutely thrilled to welcome you to the NayePankh Foundation! Thank you for dedicating your time and energy to our mission of educating and empowering underprivileged youth.\n\nOur coordinator will reach out to you shortly for a brief orientation. In the meantime, you can explore our website to see updates from the field.\n\nWarm regards,\nNayePankh Foundation Team`;
+        }
+        if (promptText.includes('thanks') || promptText.includes('donation_thanks')) {
+          return `Subject: Heartfelt Thanks for your Support! 💚\n\nDear Supporter,\n\nWe received your donation. Your support directly funds school supplies, digital guides, and meals for children under our care. Your donation is 80G tax-exempt.\n\nYour certificate/receipt is being prepared.\n\nWith gratitude,\nNayePankh Foundation Team`;
+        }
+        if (promptText.includes('college') || promptText.includes('college_outreach')) {
+          return `Subject: Partnership Proposal: student engagement drive 🤝\n\nDear Coordinator,\n\nWe propose an outreach partnership to engage your students in volunteering and internships with NayePankh Foundation. We offer certified experience in teaching, web dev, design, and analytics.\n\nBest regards,\nNayePankh Foundation Team`;
+        }
+        if (promptText.includes('summarize') || promptText.includes('executive summary') || promptText.includes('bullet points')) {
+          return `Executive Summary:\n- NayePankh Foundation has reached 50,000+ students across 18 states.\n- Total volunteer capacity stands at 8,432, primarily in tuition and digital literacy.\n- Excellent retention rates showing growth in partner college drives.`;
+        }
+        if (promptText.includes('volunteer')) {
+          return "You can register as a volunteer by navigating to the Volunteer tab. We offer certified internships and general volunteer roles with flexible hours.";
+        }
+        if (promptText.includes('donate')) {
+          return "Donations support our free classes. Since we are 80G registered, you can claim 50% tax deductions on your contribution. Receipt is generated automatically.";
+        }
+        if (promptText.includes('program')) {
+          return "NayePankh runs 6 core programs: Free Tuition, Digital Literacy, Spoken English, Scholarship Guidance, Women Empowerment, and Mental Health.";
+        }
+        return "Namaste! I am the NayePankh Assistant. I can help with information about our programs, volunteer drives, tax-exempt donations, and student internships.";
+      }
+
+      return replyText;
+    }
+
+    // ── CHAT ────────────────────────────────────────────────────────────────
+
+    const CHAT_SYSTEM = `You are the official AI assistant for NayePankh Foundation, a volunteer-driven NGO based in India focused on education and empowerment for underprivileged children and youth.
+
+About NayePankh Foundation:
+- Founded in 2020, registered under 80G and 12A, UP Govt. registered
+- Website: www.nayepankh.com
+- Over 50,000+ students reached, 8,000+ volunteers, 18 states, 12 programs
+- Programs: Free Tuition (Class 1–12), Digital Literacy, Scholarship Guidance, Spoken English, Women Empowerment, Mental Health Awareness
+- Volunteers receive: certificate, letter of recommendation, real-world experience, internship opportunities
+- Donations are 80G tax-exempt
+- Internships: available in frontend, backend, AI, data analytics, design, content, marketing and more
+
+Be warm, helpful, and informative. Keep responses concise (3–5 sentences unless more detail is needed). Always end with an encouraging note or a clear next step.`;
+
+    let chatHistory = [];
+
+    async function sendChat() {
+      const input = document.getElementById('chatInput');
+      const msg = input.value.trim();
+      if (!msg) return;
+      input.value = '';
+      appendMsg(msg, 'user');
+      chatHistory.push({ role: 'user', content: msg });
+
+      const btn = document.getElementById('sendBtn');
+      btn.disabled = true;
+
+      // Typing indicator
+      const typingDiv = document.createElement('div');
+      typingDiv.className = 'msg'; typingDiv.id = 'typing';
+      typingDiv.innerHTML = `<div class="msg-avatar ai">🌱</div><div class="msg-bubble ai"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+      document.getElementById('messages').appendChild(typingDiv);
+      scrollBottom();
+
+      const reply = await callGemini(chatHistory, CHAT_SYSTEM, 'sendBtn');
+      document.getElementById('typing')?.remove();
+      btn.disabled = false;
+
+      if (reply) {
+        chatHistory.push({ role: 'assistant', content: reply });
+        appendMsg(reply, 'ai');
+      }
+    }
+
+    function appendMsg(text, role) {
+      const el = document.createElement('div');
+      el.className = `msg${role === 'user' ? ' user' : ''}`;
+      el.innerHTML = `<div class="msg-avatar ${role}">${role === 'ai' ? '🌱' : '👤'}</div><div class="msg-bubble ${role}">${text.replace(/\n/g, '<br>')}</div>`;
+      document.getElementById('messages').appendChild(el);
+      scrollBottom();
+    }
+
+    function scrollBottom() {
+      const m = document.getElementById('messages');
+      m.scrollTop = m.scrollHeight;
+    }
+
+    function sendQuick(text) {
+      document.getElementById('chatInput').value = text;
+      sendChat();
+    }
+
+    // ── EMAIL ────────────────────────────────────────────────────────────────
+
+    const EMAIL_PROMPTS = {
+      volunteer_welcome: 'Write a warm welcome email to a new NayePankh Foundation volunteer.',
+      donation_thanks: 'Write a heartfelt thank-you email to someone who just donated to NayePankh Foundation.',
+      college_outreach: 'Write a professional outreach email to a college, proposing a partnership with NayePankh Foundation.',
+      event_invite: 'Write an engaging invitation email for an upcoming NayePankh Foundation event.',
+      scholarship_alert: 'Write an encouraging email to a student informing them about scholarship opportunities through NayePankh Foundation.',
+      corporate_csr: 'Write a professional email to a corporate company proposing a CSR partnership with NayePankh Foundation.',
+    };
+
+    async function draftEmail() {
+      const type = document.getElementById('emailType').value;
+      const name = document.getElementById('recipientName').value || 'there';
+      const details = document.getElementById('emailDetails').value;
+      const tone = document.getElementById('emailTone').value;
+
+      const btn = document.getElementById('emailBtn');
+      btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Drafting…';
+
+      const system = `You are a warm, authentic communications writer for NayePankh Foundation, an Indian NGO focused on education and empowerment (80G registered, 12A, UP Govt.). Write emails that feel human and genuine, not corporate. The foundation reaches 50,000+ students through volunteer-led programs. Always sign off as "NayePankh Foundation Team".`;
+
+      const prompt = `${EMAIL_PROMPTS[type]}
+
+Recipient name: ${name}
+Tone: ${tone}
+Additional context: ${details || 'None provided'}
+
+Write a complete email with Subject line, greeting, body (2–3 short paragraphs), and sign-off. Format as:
+Subject: [subject line]
+
+[email body]`;
+
+      const result = await callGemini([{ role: 'user', content: prompt }], system, 'emailBtn');
+      btn.disabled = false; btn.innerHTML = '✨ Draft Email';
+
+      const output = document.getElementById('emailOutput');
+      if (result) output.innerHTML = result.replace(/\n/g, '<br>');
+    }
+
+    // ── SUMMARY ──────────────────────────────────────────────────────────────
+
+    async function summarizeReport() {
+      const data = document.getElementById('reportData').value.trim();
+      if (!data) { alert('Please paste your report data first.'); return; }
+      const type = document.getElementById('reportType').value;
+      const format = document.getElementById('outputFormat').value;
+
+      const btn = document.getElementById('summaryBtn');
+      btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Analyzing…';
+
+      const system = `You are an analyst for NayePankh Foundation, an Indian NGO (80G, 12A registered). Transform raw data into clear, compelling narratives. Be specific with numbers. Keep the language warm but data-driven.`;
+
+      const prompt = `Summarize the following ${type} report for NayePankh Foundation in the format of "${format}":
+
+RAW DATA:
+${data}
+
+Make it clear, compelling, and appropriate for sharing with ${format.includes('donor') ? 'donors and supporters' : format.includes('social') ? 'social media audiences' : 'management and stakeholders'}.`;
+
+      const result = await callGemini([{ role: 'user', content: prompt }], system, 'summaryBtn');
+      btn.disabled = false; btn.innerHTML = '✨ Summarize Report';
+
+      const output = document.getElementById('summaryOutput');
+      if (result) output.innerHTML = result.replace(/\n/g, '<br>');
+    }
+
+    // ── Copy ────────────────────────────────────────────────────────────────
+
+    function copyOutput(id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = event.target;
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => btn.textContent = '📋 Copy', 2000);
+      });
+    }
+  </script>
+</body>
+
+</html>

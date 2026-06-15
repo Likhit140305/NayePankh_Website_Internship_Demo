@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>NayePankh Foundation — AI-Powered Website</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--sage:#2D5A3D;--sage-l:#4A7C59;--sage-p:#EBF3EE;--clay:#C4622D;--clay-l:#E8845A;--cream:#FAF8F4;--ink:#1A1A18;--muted:#6B6B62;--b:rgba(26,26,24,.1);--r:4px;--ffd:'Fraunces',Georgia,serif;--ffb:'DM Sans',system-ui,sans-serif;}
+[data-theme=dark]{--sage:#7EC89A;--sage-l:#A8D8B8;--sage-p:#1A2E20;--clay:#E8845A;--clay-l:#F0A07C;--cream:#111110;--ink:#F0EDE8;--muted:#9B9B90;--b:rgba(240,237,232,.12);}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--ffb);background:var(--cream);color:var(--ink);font-size:16px;line-height:1.7;transition:background .3s,color .3s;overflow-x:hidden;}
+
+/* ─ Nav ─ */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:.85rem 2rem;background:var(--cream);border-bottom:1px solid var(--b);transition:background .3s;}
+.nav-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+.nav-logo img{height:38px;width:auto;}
+.nav-links{display:flex;gap:1.75rem;align-items:center;}
+.nav-links a{text-decoration:none;font-size:.85rem;color:var(--muted);transition:color .2s;}
+.nav-links a:hover{color:var(--ink);}
+.nav-cta{background:var(--sage)!important;color:var(--cream)!important;padding:.45rem 1.1rem;border-radius:var(--r);font-weight:500;}
+.nav-cta:hover{background:var(--sage-l)!important;}
+.theme-btn{background:none;border:1px solid var(--b);border-radius:var(--r);padding:.35rem .7rem;cursor:pointer;font-size:.75rem;color:var(--muted);font-family:var(--ffb);transition:all .2s;}
+.theme-btn:hover{border-color:var(--sage);color:var(--sage);}
+.ai-badge{background:linear-gradient(135deg,#2D5A3D,#534AB7);color:#FAF8F4;font-size:.65rem;padding:.2rem .55rem;border-radius:20px;font-weight:500;margin-left:.5rem;}
+
+/* ─ Hero ─ */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:7rem 2rem 4rem;max-width:1200px;margin:0 auto;gap:4rem;}
+.eyebrow{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--clay);font-weight:500;margin-bottom:1rem;}
+.hero-headline{font-family:var(--ffd);font-size:clamp(2.5rem,5vw,4rem);font-weight:700;line-height:1.1;margin-bottom:1.25rem;}
+.hero-headline em{font-style:italic;font-weight:300;color:var(--sage);}
+.hero-sub{font-size:1rem;color:var(--muted);max-width:430px;margin-bottom:1.75rem;line-height:1.8;}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem;}
+.btn{background:var(--sage);color:var(--cream);padding:.8rem 1.75rem;border:none;border-radius:var(--r);font-family:var(--ffb);font-size:.9rem;font-weight:500;cursor:pointer;text-decoration:none;display:inline-block;transition:background .2s,transform .15s;}
+.btn:hover{background:var(--sage-l);transform:translateY(-1px);}
+.btn-outline{background:transparent;color:var(--ink);border:1px solid var(--b);padding:.8rem 1.75rem;border-radius:var(--r);font-family:var(--ffb);font-size:.9rem;font-weight:500;cursor:pointer;text-decoration:none;display:inline-block;transition:all .2s;}
+.btn-outline:hover{border-color:var(--sage);color:var(--sage);transform:translateY(-1px);}
+
+/* ─ AI personaliser widget ─ */
+.ai-widget{background:var(--cream);border:1px solid var(--b);border-radius:12px;overflow:hidden;box-shadow:0 4px 32px rgba(0,0,0,.08);}
+.ai-widget-header{background:var(--sage);color:#FAF8F4;padding:.85rem 1.1rem;display:flex;align-items:center;gap:.65rem;font-size:.85rem;font-weight:500;}
+.ai-glow{width:8px;height:8px;border-radius:50%;background:#7EC89A;animation:glow 2s infinite;}
+@keyframes glow{0%,100%{opacity:1;box-shadow:0 0 4px #7EC89A;}50%{opacity:.5;box-shadow:none;}}
+.ai-widget-body{padding:1.1rem;}
+.ai-prompt{font-size:.8rem;color:var(--muted);margin-bottom:.75rem;}
+.role-btns{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;}
+.role-btn{background:var(--sage-p);border:1px solid transparent;color:var(--sage);font-size:.78rem;padding:.4rem .85rem;border-radius:20px;cursor:pointer;font-family:var(--ffb);font-weight:500;transition:all .2s;}
+.role-btn:hover,.role-btn.active{background:var(--sage);color:var(--cream);}
+.personalised-content{min-height:100px;font-size:.85rem;color:var(--muted);line-height:1.65;padding:.85rem;background:var(--sage-p);border-radius:8px;transition:all .3s;}
+.personalised-content .p-title{font-family:var(--ffd);font-size:1rem;color:var(--ink);font-weight:700;margin-bottom:.4rem;}
+.personalised-content .p-cta{display:inline-block;margin-top:.75rem;background:var(--sage);color:var(--cream);padding:.45rem 1rem;border-radius:var(--r);font-size:.78rem;font-weight:500;text-decoration:none;cursor:pointer;border:none;font-family:var(--ffb);}
+.ai-tag{font-size:.65rem;color:rgba(45,90,61,.6);margin-top:.65rem;display:flex;align-items:center;gap:.3rem;}
+
+/* ─ Sections ─ */
+section{padding:5.5rem 2rem;}
+.container{max-width:1200px;margin:0 auto;}
+.section-label{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--clay);font-weight:500;margin-bottom:.5rem;}
+.section-title{font-family:var(--ffd);font-size:clamp(1.75rem,3.5vw,2.75rem);font-weight:700;line-height:1.15;margin-bottom:1rem;}
+.section-title em{font-style:italic;font-weight:300;color:var(--sage);}
+
+/* ─ Programs ─ */
+#programs{background:var(--sage-p);}
+.programs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2.5rem;}
+.prog-card{background:var(--cream);border:1px solid var(--b);border-radius:8px;padding:1.5rem;transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden;}
+.prog-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--sage);transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.prog-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.07);}
+.prog-card:hover::after{transform:scaleX(1);}
+.prog-icon{font-size:1.5rem;margin-bottom:.75rem;}
+.prog-title{font-weight:500;margin-bottom:.35rem;font-size:.95rem;}
+.prog-desc{font-size:.8rem;color:var(--muted);line-height:1.65;}
+
+/* ─ AI Match ─ */
+#match{}
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+.match-form{background:var(--cream);border:1px solid var(--b);border-radius:8px;padding:1.75rem;}
+.match-form h3{font-weight:500;margin-bottom:1.25rem;}
+.fg{display:flex;flex-direction:column;gap:.35rem;margin-bottom:.9rem;}
+.fg label{font-size:.75rem;font-weight:500;color:var(--muted);}
+.fg select,.fg input{font-family:var(--ffb);font-size:.875rem;padding:.6rem .8rem;border:1px solid var(--b);border-radius:var(--r);background:var(--cream);color:var(--ink);outline:none;transition:border-color .2s;}
+.fg select:focus,.fg input:focus{border-color:var(--sage);}
+.match-result{background:var(--sage-p);border-radius:8px;padding:1.25rem;margin-top:1rem;display:none;}
+.match-result.show{display:block;}
+.match-program{display:flex;align-items:flex-start;gap:.85rem;margin-bottom:.75rem;background:var(--cream);border-radius:6px;padding:1rem;border-left:3px solid var(--sage);}
+.match-pct{font-family:var(--ffd);font-size:1.5rem;font-weight:700;color:var(--sage);min-width:52px;}
+.match-info-title{font-weight:500;font-size:.9rem;margin-bottom:.2rem;}
+.match-info-desc{font-size:.78rem;color:var(--muted);}
+.match-loading{text-align:center;padding:1.5rem;color:var(--muted);font-size:.85rem;}
+
+/* ─ Ticker ─ */
+.ticker{background:var(--sage);color:#FAF8F4;padding:1rem 0;overflow:hidden;}
+.ticker-track{display:flex;gap:3.5rem;animation:ticker 22s linear infinite;white-space:nowrap;}
+.ticker-track:hover{animation-play-state:paused;}
+@keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.ticker-item{display:flex;align-items:center;gap:.65rem;font-size:.82rem;font-weight:500;opacity:.9;flex-shrink:0;}
+.t-dot{width:5px;height:5px;border-radius:50%;background:var(--clay-l);flex-shrink:0;}
+
+/* ─ Stats ─ */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:2.5rem;}
+.stat{text-align:center;}
+.stat-num{font-family:var(--ffd);font-size:2.5rem;font-weight:700;color:var(--sage);}
+.stat-label{font-size:.8rem;color:var(--muted);margin-top:.2rem;}
+
+/* ─ Chat bubble ─ */
+.chat-bubble{position:fixed;bottom:1.5rem;right:1.5rem;z-index:200;}
+.chat-toggle{width:54px;height:54px;border-radius:50%;background:var(--sage);border:none;cursor:pointer;font-size:1.35rem;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(45,90,61,.35);transition:transform .2s;}
+.chat-toggle:hover{transform:scale(1.08);}
+.chat-window{position:absolute;bottom:66px;right:0;width:340px;background:var(--cream);border:1px solid var(--b);border-radius:12px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.15);display:none;flex-direction:column;max-height:460px;}
+.chat-window.open{display:flex;}
+.chat-win-header{background:var(--sage);color:#FAF8F4;padding:.85rem 1.1rem;display:flex;align-items:center;justify-content:space-between;}
+.chat-win-title{font-size:.9rem;font-weight:500;display:flex;align-items:center;gap:.5rem;}
+.chat-close{background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:1rem;}
+.chat-messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.75rem;}
+.cm{display:flex;gap:.55rem;max-width:100%;}
+.cm.user{flex-direction:row-reverse;}
+.cm-avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;}
+.cm-avatar.ai{background:var(--sage);color:#FAF8F4;}
+.cm-avatar.user{background:var(--clay);color:#FAF8F4;}
+.cm-bubble{padding:.6rem .85rem;border-radius:8px;font-size:.82rem;line-height:1.6;max-width:82%;}
+.cm-bubble.ai{background:var(--sage-p);border-radius:2px 8px 8px 8px;}
+.cm-bubble.user{background:var(--sage);color:#FAF8F4;border-radius:8px 2px 8px 8px;}
+.typing-dots{display:flex;gap:3px;padding:.4rem .6rem;align-items:center;}
+.d{width:6px;height:6px;background:var(--muted);border-radius:50%;animation:bounce .9s infinite;}
+.d:nth-child(2){animation-delay:.2s;}.d:nth-child(3){animation-delay:.4s;}
+@keyframes bounce{0%,80%,100%{transform:translateY(0);}40%{transform:translateY(-5px);}}
+.chat-input-row{border-top:1px solid var(--b);padding:.65rem .85rem;display:flex;gap:.5rem;}
+.ci{flex:1;font-family:var(--ffb);font-size:.82rem;padding:.5rem .75rem;border:1px solid var(--b);border-radius:var(--r);outline:none;background:var(--cream);color:var(--ink);transition:border-color .2s;}
+.ci:focus{border-color:var(--sage);}
+.cs{background:var(--sage);color:#FAF8F4;border:none;padding:.5rem .85rem;border-radius:var(--r);cursor:pointer;font-size:.8rem;font-family:var(--ffb);transition:background .2s;}
+.cs:hover{background:var(--sage-l);}
+.cs:disabled{opacity:.4;}
+
+/* ─ Footer ─ */
+footer{background:var(--ink);padding:3rem 2rem;border-top:1px solid rgba(250,248,244,.07);}
+.foot-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.foot-logo{display:flex;align-items:center;gap:.6rem;}
+.foot-logo img{height:32px;width:auto;filter:brightness(0) invert(1);}
+.foot-copy{font-size:.8rem;color:rgba(250,248,244,.35);margin-top:.25rem;}
+.foot-links{display:flex;gap:1.5rem;}
+.foot-links a{color:rgba(250,248,244,.4);text-decoration:none;font-size:.82rem;transition:color .2s;}
+.foot-links a:hover{color:#FAF8F4;}
+
+.fade-up{opacity:0;transform:translateY(18px);transition:opacity .5s,transform .5s;}
+.fade-up.vis{opacity:1;transform:translateY(0);}
+
+@media(max-width:768px){
+  .hero{grid-template-columns:1fr;padding:6rem 1.5rem 3rem;gap:2rem;}
+  .programs-grid{grid-template-columns:1fr 1fr;}
+  .match-grid{grid-template-columns:1fr;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  section{padding:4rem 1.5rem;}
+  nav{padding:.85rem 1.25rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <a href="#" class="nav-logo"><img src="../../../../logo_new.png" alt="NayePankh Foundation" style="background:#fff;padding:3px 6px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.05);height:38px;width:auto;"/></a>
+  <div class="nav-links">
+    <a href="#programs">Programs</a>
+    <a href="#match">Volunteer Match</a>
+    <a href="#about">About</a>
+    <button class="theme-btn" id="themeBtn">Dark</button>
+    <a href="#volunteer" class="nav-cta">Join Us <span class="ai-badge">AI</span></a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section style="padding:0;">
+  <div class="hero">
+    <div>
+      <p class="eyebrow">NayePankh Foundation · AI-Powered NGO Platform</p>
+      <h1 class="hero-headline">Give every child<br><em>new wings</em><br>to fly.</h1>
+      <p class="hero-sub">An AI-enhanced platform for education, empowerment, and volunteer management — helping NayePankh Foundation reach more children faster.</p>
+      <div class="hero-actions">
+        <a href="#volunteer" class="btn">Volunteer with Us</a>
+        <a href="#programs" class="btn-outline">Our Programs</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:.65rem;font-size:.78rem;color:var(--muted);">
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--sage);display:inline-block;animation:glow 2s infinite;"></span>
+        AI assistant active · Ask us anything ↘
+      </div>
+    </div>
+
+    <!-- AI Personaliser Widget -->
+    <div class="ai-widget fade-up">
+      <div class="ai-widget-header">
+        <div class="ai-glow"></div>
+        AI Personaliser — Who are you?
+      </div>
+      <div class="ai-widget-body">
+        <p class="ai-prompt">Select your role and we'll personalise the experience for you:</p>
+        <div class="role-btns">
+          <button class="role-btn" onclick="personalise('student')">🎓 Student</button>
+          <button class="role-btn" onclick="personalise('volunteer')">🌱 Volunteer</button>
+          <button class="role-btn" onclick="personalise('donor')">💚 Donor</button>
+          <button class="role-btn" onclick="personalise('parent')">👨‍👩‍👧 Parent</button>
+          <button class="role-btn" onclick="personalise('corporate')">🏢 Corporate</button>
+        </div>
+        <div class="personalised-content" id="personalisedContent">
+          <div style="color:var(--muted);font-size:.85rem;">Select your role above to see content personalised just for you.</div>
+        </div>
+        <div class="ai-tag">✨ Personalised by AI · Gemini</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Ticker -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <div class="ticker-item"><span class="t-dot"></span>Education for All</div>
+    <div class="ticker-item"><span class="t-dot"></span>50,000+ Students Reached</div>
+    <div class="ticker-item"><span class="t-dot"></span>8,000+ Volunteers</div>
+    <div class="ticker-item"><span class="t-dot"></span>18 States</div>
+    <div class="ticker-item"><span class="t-dot"></span>AI-Powered Programs</div>
+    <div class="ticker-item"><span class="t-dot"></span>Free Tuition Initiative</div>
+    <div class="ticker-item"><span class="t-dot"></span>Digital Literacy</div>
+    <div class="ticker-item"><span class="t-dot"></span>Women Empowerment</div>
+    <div class="ticker-item"><span class="t-dot"></span>Education for All</div>
+    <div class="ticker-item"><span class="t-dot"></span>50,000+ Students Reached</div>
+    <div class="ticker-item"><span class="t-dot"></span>8,000+ Volunteers</div>
+    <div class="ticker-item"><span class="t-dot"></span>18 States</div>
+    <div class="ticker-item"><span class="t-dot"></span>AI-Powered Programs</div>
+    <div class="ticker-item"><span class="t-dot"></span>Free Tuition Initiative</div>
+    <div class="ticker-item"><span class="t-dot"></span>Digital Literacy</div>
+    <div class="ticker-item"><span class="t-dot"></span>Women Empowerment</div>
+  </div>
+</div>
+
+<!-- Programs -->
+<section id="programs">
+  <div class="container">
+    <p class="section-label">What we do</p>
+    <h2 class="section-title">Programs that create <em>real change</em></h2>
+    <div class="programs-grid">
+      <div class="prog-card fade-up"><div class="prog-icon">📖</div><div class="prog-title">Free Tuition Initiative</div><div class="prog-desc">Volunteer-led tutoring for Class 1–12 students, covering all subjects with personalised learning plans.</div></div>
+      <div class="prog-card fade-up"><div class="prog-icon">💻</div><div class="prog-title">Digital Literacy</div><div class="prog-desc">Teaching first-generation learners computer skills, internet safety, and essential digital tools.</div></div>
+      <div class="prog-card fade-up"><div class="prog-icon">🎓</div><div class="prog-title">Scholarship Guidance</div><div class="prog-desc">Helping students discover and apply for government scholarships and financial aid programs.</div></div>
+      <div class="prog-card fade-up"><div class="prog-icon">🗣️</div><div class="prog-title">Spoken English</div><div class="prog-desc">Confidence-building communication classes for young adults entering the workforce.</div></div>
+      <div class="prog-card fade-up"><div class="prog-icon">♀️</div><div class="prog-title">Women Empowerment</div><div class="prog-desc">Career, finance, and self-confidence workshops specifically for girls and young women.</div></div>
+      <div class="prog-card fade-up"><div class="prog-icon">🧠</div><div class="prog-title">Mental Health Awareness</div><div class="prog-desc">Peer support groups and campaigns addressing student stress and emotional wellbeing.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section id="about" style="background:var(--sage);color:#FAF8F4;">
+  <div class="container" style="text-align:center;">
+    <p class="section-label" style="color:rgba(250,248,244,.6);">Our impact</p>
+    <h2 class="section-title" style="color:#FAF8F4;">Numbers that tell the <em style="color:#A8D8B8;">real story</em></h2>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-num" id="cnt1">0</div><div class="stat-label" style="color:rgba(250,248,244,.6);">Students Reached</div></div>
+      <div class="stat"><div class="stat-num" id="cnt2">0</div><div class="stat-label" style="color:rgba(250,248,244,.6);">Volunteers</div></div>
+      <div class="stat"><div class="stat-num" id="cnt3">0</div><div class="stat-label" style="color:rgba(250,248,244,.6);">States Covered</div></div>
+      <div class="stat"><div class="stat-num" id="cnt4">0</div><div class="stat-label" style="color:rgba(250,248,244,.6);">Programs Running</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- AI Volunteer Match -->
+<section id="match">
+  <div class="container">
+    <div class="match-grid">
+      <div>
+        <p class="section-label">AI-Powered Feature</p>
+        <h2 class="section-title">Find your perfect <em>program match</em></h2>
+        <p style="color:var(--muted);margin-bottom:1.5rem;line-height:1.8;">Our AI analyses your skills, availability, and interests to match you with the NayePankh program where you'll have the most impact.</p>
+        <div style="display:flex;flex-direction:column;gap:.75rem;">
+          <div style="display:flex;gap:.75rem;align-items:flex-start;">
+            <span style="background:var(--sage-p);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;">✨</span>
+            <div><div style="font-weight:500;font-size:.9rem;margin-bottom:.2rem;">Skill-based matching</div><div style="font-size:.82rem;color:var(--muted);">AI maps your skills to program requirements.</div></div>
+          </div>
+          <div style="display:flex;gap:.75rem;align-items:flex-start;">
+            <span style="background:var(--sage-p);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;">📍</span>
+            <div><div style="font-weight:500;font-size:.9rem;margin-bottom:.2rem;">Location-aware</div><div style="font-size:.82rem;color:var(--muted);">Matches programs active in your city.</div></div>
+          </div>
+          <div style="display:flex;gap:.75rem;align-items:flex-start;">
+            <span style="background:var(--sage-p);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;">⏰</span>
+            <div><div style="font-weight:500;font-size:.9rem;margin-bottom:.2rem;">Availability matching</div><div style="font-size:.82rem;color:var(--muted);">Only suggests programs that fit your schedule.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="match-form">
+        <h3>Tell us about yourself</h3>
+        <div class="fg"><label>Your Skills</label>
+          <select id="m-skill">
+            <option>Teaching / Tutoring</option>
+            <option>Technology / Coding</option>
+            <option>Design / Creative</option>
+            <option>Communication / Writing</option>
+            <option>Counselling / Mentorship</option>
+            <option>Event Management</option>
+          </select>
+        </div>
+        <div class="fg"><label>Weekly Availability</label>
+          <select id="m-avail">
+            <option>1–3 hours</option><option>3–6 hours</option><option>6–10 hours</option><option>10+ hours</option>
+          </select>
+        </div>
+        <div class="fg"><label>Preferred Mode</label>
+          <select id="m-mode"><option>Online</option><option>In-person</option><option>Both</option></select>
+        </div>
+        <div class="fg"><label>Your City</label>
+          <input type="text" id="m-city" placeholder="e.g. Delhi, Mumbai, Bangalore…"/>
+        </div>
+        <button class="btn" style="width:100%;margin-top:.25rem;" onclick="runMatch()">✨ Find My Match</button>
+        <div id="matchResult" class="match-result"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Volunteer CTA -->
+<section id="volunteer" style="background:var(--ink);color:#FAF8F4;">
+  <div class="container" style="max-width:680px;text-align:center;">
+    <p class="section-label" style="color:var(--clay-l);">Join us</p>
+    <h2 class="section-title" style="color:#FAF8F4;">Ready to give a child <em style="color:#A8D8B8;">new wings?</em></h2>
+    <p style="color:rgba(250,248,244,.55);margin-bottom:2rem;">Apply in 2 minutes. Our AI will match you to the right program and guide you through onboarding.</p>
+    <a href="https://www.nayepankh.com" target="_blank" class="btn" style="font-size:1rem;padding:.9rem 2.5rem;">Apply to Volunteer →</a>
+    <div style="margin-top:1.25rem;font-size:.8rem;color:rgba(250,248,244,.3);">80G registered · 12A certified · UP Govt. registered · www.nayepankh.com</div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="foot-inner">
+    <div>
+      <div class="foot-logo"><img src="../../../../logo_new.png" alt="NayePankh Foundation" style="background:#fff;padding:3px 6px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.05);height:32px;width:auto;"/></div>
+      <div class="foot-copy">© 2025 NayePankh Foundation · Developed by Likhit Hegde · AI Web Development Submission</div>
+    </div>
+    <div class="foot-links">
+      <a href="#programs">Programs</a>
+      <a href="#match">Volunteer Match</a>
+      <a href="#about">Impact</a>
+      <a href="https://www.nayepankh.com" target="_blank">Official Site</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Floating AI Chat -->
+<div class="chat-bubble">
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-win-header">
+      <div class="chat-win-title">
+        <div class="ai-glow"></div>
+        NayePankh AI Assistant
+      </div>
+      <button class="chat-close" onclick="toggleChat()">✕</button>
+    </div>
+    <div style="padding:.4rem .85rem;background:rgba(0,0,0,.04);border-bottom:1px solid var(--b);display:flex;gap:.5rem;align-items:center;">
+      <span style="font-size:.68rem;color:var(--muted);white-space:nowrap;">API Key (Optional):</span>
+      <input type="password" id="apiKey" placeholder="AIzaSy... (uses server key if blank)" style="all:unset;font-family:var(--ffb);font-size:.68rem;flex:1;border-bottom:1px dashed var(--muted);color:var(--ink);outline:none;"/>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="cm">
+        <div class="cm-avatar ai">🌱</div>
+        <div class="cm-bubble ai">Namaste! I'm the NayePankh AI. Ask me anything about our programs, volunteering, donations, or scholarships!</div>
+      </div>
+    </div>
+    <div class="chat-input-row">
+      <input class="ci" id="ci" placeholder="Ask anything…" onkeydown="if(event.key==='Enter')sendChat()"/>
+      <button class="cs" id="csBtn" onclick="sendChat()">→</button>
+    </div>
+  </div>
+  <button class="chat-toggle" onclick="toggleChat()" title="Chat with AI Assistant">🌱</button>
+</div>
+
+<script>
+// ── Theme ────────────────────────────────────────────────────────────────
+const themeBtn = document.getElementById('themeBtn');
+let dark = false;
+themeBtn.addEventListener('click', () => {
+  dark = !dark;
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : '');
+  themeBtn.textContent = dark ? 'Light' : 'Dark';
+});
+
+// ── Scroll animations ─────────────────────────────────────────────────────
+const obs = new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('vis');});},{threshold:.12});
+document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
+
+// ── Counter animation ─────────────────────────────────────────────────────
+function animCount(id, target, suffix='') {
+  let n=0; const step=Math.ceil(target/60);
+  const t=setInterval(()=>{n=Math.min(n+step,target);document.getElementById(id).textContent=n.toLocaleString()+suffix;if(n>=target)clearInterval(t);},22);
+}
+const statsObs = new IntersectionObserver(e=>{
+  e.forEach(x=>{if(x.isIntersecting){
+    animCount('cnt1',50000,'+'); animCount('cnt2',8432,'+'); animCount('cnt3',18); animCount('cnt4',6);
+    statsObs.disconnect();
+  }});
+},{threshold:.3});
+statsObs.observe(document.getElementById('cnt1'));
+
+// ── AI Personaliser ───────────────────────────────────────────────────────
+const personalisedContent = {
+  student: {
+    title: '🎓 Resources for Students',
+    body: "Looking for free tutoring or scholarship guidance? NayePankh volunteers offer one-on-one support for Class 1–12 students, plus help with government scholarship applications that could fund your education.",
+    cta: 'Find Scholarship Help'
+  },
+  volunteer: {
+    title: '🌱 Start Your Volunteer Journey',
+    body: "Welcome! We have 6 active programs that need your skills — from tutoring to digital literacy to content creation. Use our AI matcher below to find your perfect fit, then apply in 2 minutes.",
+    cta: 'Find My Program Match ↓'
+  },
+  donor: {
+    title: '💚 Your Impact as a Donor',
+    body: "₹500 gives a child one month of books. ₹1,000 funds a digital literacy class. ₹5,000 supports a full program quarter. All donations are 80G tax-exempt. 100% goes to programs.",
+    cta: 'Donate to NayePankh'
+  },
+  parent: {
+    title: '👨‍👩‍👧 Support for Your Child',
+    body: "NayePankh offers free tutoring (Class 1–12), scholarship guidance, and skill-building for your child — all delivered by trained, background-checked volunteers. Programs are online and in-person.",
+    cta: 'Enrol My Child'
+  },
+  corporate: {
+    title: '🏢 Partner With Us (CSR)',
+    body: "NayePankh is 80G and 12A registered. Your CSR contribution directly funds education programs across 18 states. We provide impact reports, co-branding opportunities, and volunteer engagement programs for your employees.",
+    cta: 'Discuss CSR Partnership'
+  }
+};
+
+function personalise(role) {
+  document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  const c = personalisedContent[role];
+  const el = document.getElementById('personalisedContent');
+  el.innerHTML = `
+    <div class="p-title">${c.title}</div>
+    <div style="font-size:.82rem;color:var(--muted);line-height:1.65;">${c.body}</div>
+    <button class="p-cta" onclick="document.getElementById('match').scrollIntoView({behavior:'smooth'})">${c.cta}</button>
+  `;
+}
+
+// ── AI Volunteer Match ────────────────────────────────────────────────────
+const matchData = {
+  'Teaching / Tutoring': [{prog:'Free Tuition Initiative',pct:97,desc:'Direct 1:1 tutoring — your teaching skills are a perfect fit.'},{prog:'Spoken English',pct:84,desc:'Your communication skills can build student confidence.'}],
+  'Technology / Coding': [{prog:'Digital Literacy',pct:95,desc:'Teach computer basics to first-generation learners.'},{prog:'Free Tuition Initiative',pct:72,desc:'Help with Math, Science, or Computer Science.'}],
+  'Design / Creative': [{prog:'Scholarship Guidance',pct:78,desc:'Help design application materials and collaterals.'},{prog:'Mental Health Awareness',pct:74,desc:'Create awareness campaign visuals and materials.'}],
+  'Communication / Writing': [{prog:'Mental Health Awareness',pct:91,desc:'Write campaign content and facilitate peer groups.'},{prog:'Spoken English',pct:89,desc:'Your communication skills are ideal for this program.'}],
+  'Counselling / Mentorship': [{prog:'Women Empowerment',pct:94,desc:'Mentor girls and young women in career and life skills.'},{prog:'Mental Health Awareness',pct:88,desc:'Facilitate peer support groups and awareness sessions.'}],
+  'Event Management': [{prog:'Scholarship Guidance',pct:82,desc:'Organise scholarship application camps and workshops.'},{prog:'Women Empowerment',pct:77,desc:'Help coordinate empowerment workshops and events.'}],
+};
+
+async function runMatch() {
+  const skill = document.getElementById('m-skill').value;
+  const result = document.getElementById('matchResult');
+  result.classList.add('show');
+  result.innerHTML = `<div class="match-loading">✨ AI is finding your best matches…</div>`;
+  await new Promise(r=>setTimeout(r,1200));
+  const matches = matchData[skill] || [];
+  result.innerHTML = `
+    <div style="font-size:.8rem;font-weight:500;color:var(--sage);margin-bottom:.75rem;">✨ AI Match Results for "${skill}"</div>
+    ${matches.map(m=>`
+      <div class="match-program">
+        <div class="match-pct">${m.pct}%</div>
+        <div>
+          <div class="match-info-title">${m.prog}</div>
+          <div class="match-info-desc">${m.desc}</div>
+        </div>
+      </div>
+    `).join('')}
+    <a href="https://www.nayepankh.com" target="_blank" class="btn" style="font-size:.82rem;padding:.6rem 1.25rem;margin-top:.25rem;">Apply for ${matches[0]?.prog} →</a>
+  `;
+}
+
+// ── Chat ──────────────────────────────────────────────────────────────────
+let chatOpen = false;
+let chatHistory = [];
+
+function toggleChat() {
+  chatOpen = !chatOpen;
+  document.getElementById('chatWindow').classList.toggle('open', chatOpen);
+  if (chatOpen) document.getElementById('ci').focus();
+}
+
+const SYSTEM = `You are the AI assistant for NayePankh Foundation, a volunteer-driven Indian NGO (80G, 12A registered, UP Govt.) focused on education and empowerment. Founded 2020. 50,000+ students, 8,000+ volunteers, 18 states, 6 programs: Free Tuition (Class 1-12), Digital Literacy, Scholarship Guidance, Spoken English, Women Empowerment, Mental Health Awareness. Volunteers get certificate + LOR. Donations are 80G tax-exempt. Website: www.nayepankh.com. Be warm, concise (2-4 sentences). Always suggest a clear next step.`;
+
+async function sendChat() {
+  const input = document.getElementById('ci');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  appendChatMsg(msg, 'user');
+  chatHistory.push({role:'user',content:msg});
+
+  const btn = document.getElementById('csBtn');
+  btn.disabled = true;
+
+  // Typing
+  const tid = 'typing-'+Date.now();
+  const typingEl = document.createElement('div');
+  typingEl.className = 'cm'; typingEl.id = tid;
+  typingEl.innerHTML = `<div class="cm-avatar ai">🌱</div><div class="cm-bubble ai"><div class="typing-dots"><div class="d"></div><div class="d"></div><div class="d"></div></div></div>`;
+  document.getElementById('chatMessages').appendChild(typingEl);
+  scrollChat();
+
+  const key = document.getElementById('apiKey')?.value?.trim() || '';
+  let reply = '';
+  let useFallback = false;
+
+  try {
+    const contents = chatHistory.map(m => ({
+      role: m.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: m.content }]
+    }));
+    
+    let res;
+    if (key) {
+      res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({systemInstruction:{parts:[{text:SYSTEM}]},contents})
+      });
+    } else {
+      // Backend proxy call
+      const base = window.location.protocol === 'file:' ? 'http://localhost:3001' : window.location.origin;
+      res = await fetch(`${base}/api/ai/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: SYSTEM }] },
+          contents
+        })
+      });
+    }
+
+    if (!res.ok) {
+      const err = await res.json();
+      console.warn('API/Proxy Error:', err.error?.message || err.error || res.statusText);
+      useFallback = true;
+    } else {
+      const data = await res.json();
+      reply = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    }
+  } catch(e) {
+    console.warn('Network error calling AI, using fallback:', e.message);
+    useFallback = true;
+  }
+
+  if (useFallback || !key) {
+    if (useFallback || !reply) {
+      await new Promise(r=>setTimeout(r,900+Math.random()*500));
+      reply = getDemoReply(msg);
+    }
+  }
+
+  document.getElementById(tid)?.remove();
+  chatHistory.push({role:'assistant',content:reply});
+  appendChatMsg(reply,'ai');
+  btn.disabled = false;
+}
+
+function appendChatMsg(text, role) {
+  const el = document.createElement('div');
+  el.className = `cm${role==='user'?' user':''}`;
+  el.innerHTML = `<div class="cm-avatar ${role}">${role==='ai'?'🌱':'👤'}</div><div class="cm-bubble ${role}">${text.replace(/\n/g,'<br>')}</div>`;
+  document.getElementById('chatMessages').appendChild(el);
+  scrollChat();
+}
+
+function scrollChat() {
+  const m = document.getElementById('chatMessages');
+  m.scrollTop = m.scrollHeight;
+}
+
+function getDemoReply(msg) {
+  const m = msg.toLowerCase();
+  if (m.includes('volunteer') || m.includes('join')) return "Joining NayePankh is easy! Fill out a short form on our website (www.nayepankh.com), attend a quick online orientation, and you'll be matched to a program within a week. You'll receive a certificate and letter of recommendation.";
+  if (m.includes('program') || m.includes('what do')) return "We run 6 programs: Free Tuition (Class 1–12), Digital Literacy, Scholarship Guidance, Spoken English, Women Empowerment, and Mental Health Awareness. Each is delivered by volunteer educators across 18 Indian states.";
+  if (m.includes('donat') || m.includes('money')) return "All donations are 80G tax-exempt. ₹500 provides one month of books for a child, ₹1,000 funds a digital literacy class, and ₹5,000 supports a full program quarter. Visit www.nayepankh.com to donate.";
+  if (m.includes('scholarship')) return "We offer free scholarship guidance helping students apply for government schemes like NSP, PM Yashasvi, and state scholarships. Our volunteers assist with documentation, deadlines, and essays. Reach out via our website!";
+  if (m.includes('intern')) return "NayePankh offers internships in tech, design, AI, data analytics, content, marketing, and more. Interns get real responsibilities, mentorship, a certificate, and a letter of recommendation. Check our website for open roles.";
+  return "Great question! NayePankh Foundation works to make quality education accessible to every underprivileged child in India. We'd love to have you involved — visit www.nayepankh.com or ask me anything specific!";
+}
+
+// ── API key sync across chat and agents ──────────────────────────────────
+// The chat uses its own inline key field if the user provides one in the nav or agents page.
+// For this single-page site, we add a small floating key input to the nav (already in nav_cta area above)
+// No additional setup needed.
+</script>
+</body>
+</html>

@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>NayePankh AI Agent System</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --sage: #2D5A3D;
+      --sage-l: #4A7C59;
+      --sage-p: #EBF3EE;
+      --clay: #C4622D;
+      --cream: #FAF8F4;
+      --ink: #1A1A18;
+      --muted: #6B6B62;
+      --b: rgba(26, 26, 24, .1);
+      --r: 6px;
+      --ffd: 'Fraunces', Georgia, serif;
+      --ffb: 'DM Sans', system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--ffb);
+      background: #0F0F0E;
+      color: #E8E5E0;
+      font-size: 14px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* header */
+    header {
+      background: #1A1A18;
+      border-bottom: 1px solid rgba(255, 255, 255, .07);
+      padding: .85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+
+    header img {
+      height: 36px;
+      width: auto;
+    }
+
+    .h-title {
+      font-family: var(--ffd);
+      font-size: 1rem;
+      color: #FAF8F4;
+      font-weight: 700;
+    }
+
+    .h-sub {
+      font-size: .7rem;
+      color: rgba(250, 248, 244, .35);
+    }
+
+    .h-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+
+    .api-inp {
+      font-family: var(--ffb);
+      font-size: .75rem;
+      padding: .4rem .75rem;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, .05);
+      color: #E8E5E0;
+      outline: none;
+      width: 220px;
+      transition: border-color .2s;
+    }
+
+    .api-inp:focus {
+      border-color: var(--sage-l);
+    }
+
+    .api-inp::placeholder {
+      color: rgba(232, 229, 224, .3);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #3B6D11;
+      flex-shrink: 0;
+    }
+
+    .status-text {
+      font-size: .72rem;
+      color: rgba(250, 248, 244, .4);
+    }
+
+    /* layout */
+    .app {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      height: calc(100vh - 56px);
+    }
+
+    /* ─ Left: Agent registry ─ */
+    .agent-panel {
+      width: 260px;
+      background: #141413;
+      border-right: 1px solid rgba(255, 255, 255, .07);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+
+    .panel-title {
+      font-size: .68rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(232, 229, 224, .35);
+      padding: .9rem 1rem .5rem;
+    }
+
+    .agent-card {
+      padding: .75rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, .05);
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .agent-card:hover,
+    .agent-card.selected {
+      background: rgba(255, 255, 255, .04);
+    }
+
+    .agent-card.selected {
+      border-left: 2px solid var(--sage-l);
+    }
+
+    .agent-icon {
+      font-size: 1.1rem;
+      margin-bottom: .3rem;
+    }
+
+    .agent-name {
+      font-size: .82rem;
+      font-weight: 500;
+      color: #FAF8F4;
+      margin-bottom: .15rem;
+    }
+
+    .agent-desc {
+      font-size: .72rem;
+      color: rgba(232, 229, 224, .4);
+      line-height: 1.4;
+    }
+
+    .agent-status {
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      margin-top: .4rem;
+    }
+
+    .a-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .a-dot.idle {
+      background: #6B6B62;
+    }
+
+    .a-dot.running {
+      background: #C4622D;
+      animation: pulse 1s infinite;
+    }
+
+    .a-dot.done {
+      background: #3B6D11;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: .4;
+      }
+    }
+
+    .a-label {
+      font-size: .68rem;
+      color: rgba(232, 229, 224, .4);
+    }
+
+    /* ─ Centre: Orchestrator ─ */
+    .orchestrator {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .orch-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, .07);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .orch-title {
+      font-size: .85rem;
+      font-weight: 500;
+      color: #FAF8F4;
+    }
+
+    .orch-sub {
+      font-size: .72rem;
+      color: rgba(232, 229, 224, .35);
+    }
+
+    .task-bar {
+      padding: .75rem 1.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, .07);
+      display: flex;
+      gap: .65rem;
+    }
+
+    .task-select {
+      font-family: var(--ffb);
+      font-size: .8rem;
+      padding: .5rem .85rem;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: var(--r);
+      background: rgba(255, 255, 255, .05);
+      color: #E8E5E0;
+      outline: none;
+      flex: 1;
+    }
+
+    .task-select option {
+      background: #1A1A18;
+    }
+
+    .run-btn {
+      background: var(--sage);
+      color: #FAF8F4;
+      border: none;
+      padding: .5rem 1.1rem;
+      border-radius: var(--r);
+      font-family: var(--ffb);
+      font-size: .8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background .2s;
+      flex-shrink: 0;
+    }
+
+    .run-btn:hover {
+      background: var(--sage-l);
+    }
+
+    .run-btn:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    /* ─ Timeline / trace ─ */
+    .trace-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.25rem;
+    }
+
+    .trace-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: rgba(232, 229, 224, .25);
+      text-align: center;
+      gap: .5rem;
+    }
+
+    .trace-empty svg {
+      opacity: .2;
+    }
+
+    .trace-label {
+      font-size: .85rem;
+    }
+
+    .trace-sublabel {
+      font-size: .75rem;
+    }
+
+    .trace-header {
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: rgba(232, 229, 224, .3);
+      margin-bottom: 1rem;
+    }
+
+    .event {
+      display: flex;
+      gap: .75rem;
+      margin-bottom: .9rem;
+      animation: fadeIn .3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .event-line {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 24px;
+      flex-shrink: 0;
+    }
+
+    .event-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+
+    .event-connector {
+      width: 1px;
+      flex: 1;
+      background: rgba(255, 255, 255, .07);
+      margin-top: 4px;
+    }
+
+    .event-body {
+      flex: 1;
+      padding-bottom: .75rem;
+    }
+
+    .event-agent {
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-bottom: .25rem;
+    }
+
+    .event-content {
+      font-size: .8rem;
+      color: #E8E5E0;
+      line-height: 1.65;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: 6px;
+      padding: .65rem .85rem;
+    }
+
+    .event-content pre {
+      font-size: .75rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      font-family: monospace;
+      color: rgba(232, 229, 224, .7);
+      margin-top: .5rem;
+    }
+
+    .event-time {
+      font-size: .65rem;
+      color: rgba(232, 229, 224, .25);
+      margin-top: .3rem;
+    }
+
+    .event-tool-call {
+      background: rgba(45, 90, 61, .15);
+      border: 1px solid rgba(45, 90, 61, .3);
+      border-radius: 4px;
+      padding: .4rem .65rem;
+      font-size: .75rem;
+      color: var(--sage-l);
+      margin-top: .4rem;
+      font-family: monospace;
+    }
+
+    .event-result {
+      background: rgba(196, 98, 45, .08);
+      border: 1px solid rgba(196, 98, 45, .2);
+      border-radius: 4px;
+      padding: .4rem .65rem;
+      font-size: .75rem;
+      color: #E8845A;
+      margin-top: .4rem;
+    }
+
+    /* ─ Right: Memory & output ─ */
+    .side-panel {
+      width: 300px;
+      background: #141413;
+      border-left: 1px solid rgba(255, 255, 255, .07);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .side-section {
+      padding: .9rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, .07);
+    }
+
+    .side-label {
+      font-size: .68rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(232, 229, 224, .3);
+      margin-bottom: .65rem;
+    }
+
+    .memory-item {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: 4px;
+      padding: .5rem .65rem;
+      margin-bottom: .4rem;
+      font-size: .75rem;
+      color: rgba(232, 229, 224, .7);
+      line-height: 1.5;
+    }
+
+    .memory-key {
+      color: var(--sage-l);
+      font-weight: 500;
+      font-size: .7rem;
+    }
+
+    .output-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: .9rem 1rem;
+    }
+
+    .output-block {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: 6px;
+      padding: .75rem;
+      margin-bottom: .65rem;
+      font-size: .78rem;
+      line-height: 1.65;
+      color: #E8E5E0;
+    }
+
+    .output-title {
+      font-size: .7rem;
+      font-weight: 500;
+      color: var(--sage-l);
+      margin-bottom: .4rem;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .copy-btn {
+      background: rgba(255, 255, 255, .07);
+      border: none;
+      color: rgba(232, 229, 224, .5);
+      font-size: .7rem;
+      padding: .3rem .6rem;
+      border-radius: 3px;
+      cursor: pointer;
+      font-family: var(--ffb);
+      transition: all .2s;
+      margin-top: .5rem;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, .12);
+      color: #FAF8F4;
+    }
+
+    /* colors per agent */
+    .col-orch {
+      color: #7EC89A;
+    }
+
+    .dot-orch {
+      background: #7EC89A;
+    }
+
+    .col-vol {
+      color: #6DB3F2;
+    }
+
+    .dot-vol {
+      background: #6DB3F2;
+    }
+
+    .col-email {
+      color: #E8845A;
+    }
+
+    .dot-email {
+      background: #E8845A;
+    }
+
+    .col-social {
+      color: #C084FC;
+    }
+
+    .dot-social {
+      background: #C084FC;
+    }
+
+    .col-report {
+      color: #FBBF24;
+    }
+
+    .dot-report {
+      background: #FBBF24;
+    }
+
+    .col-scholar {
+      color: #F472B6;
+    }
+
+    .dot-scholar {
+      background: #F472B6;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <img src="../../../../logo_new.png" alt="NayePankh Foundation" style="background:#fff;padding:3px 6px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.05);"/>
+    <div>
+      <div class="h-title">NayePankh AI Agent System</div>
+      <div class="h-sub">Developed by Likhit Hegde · Multi-Agent Orchestration · AI Agent Development</div>
+    </div>
+    <div class="h-right">
+      <input class="api-inp" id="apiKey" type="password" placeholder="Gemini API key (AIzaSy…)" />
+      <div class="status-dot" id="statusDot"></div>
+      <div class="status-text" id="statusText">Ready</div>
+    </div>
+  </header>
+
+  <div class="app">
+
+    <!-- Agent Registry -->
+    <div class="agent-panel">
+      <div class="panel-title">Agent Registry</div>
+      <div class="agent-card selected" onclick="selectAgent(this,'orchestrator')">
+        <div class="agent-icon">🧠</div>
+        <div class="agent-name">Orchestrator</div>
+        <div class="agent-desc">Decomposes tasks, routes to specialist agents, synthesizes final output.</div>
+        <div class="agent-status">
+          <div class="a-dot idle" id="dot-orchestrator"></div>
+          <div class="a-label" id="lbl-orchestrator">Idle</div>
+        </div>
+      </div>
+      <div class="agent-card" onclick="selectAgent(this,'volunteer')">
+        <div class="agent-icon">👥</div>
+        <div class="agent-name">Volunteer Agent</div>
+        <div class="agent-desc">Handles onboarding emails, registration confirmation, and volunteer queries.</div>
+        <div class="agent-status">
+          <div class="a-dot idle" id="dot-volunteer"></div>
+          <div class="a-label" id="lbl-volunteer">Idle</div>
+        </div>
+      </div>
+      <div class="agent-card" onclick="selectAgent(this,'email')">
+        <div class="agent-icon">✉️</div>
+        <div class="agent-name">Email Agent</div>
+        <div class="agent-desc">Drafts outreach emails, thank-you notes, and donor communications.</div>
+        <div class="agent-status">
+          <div class="a-dot idle" id="dot-email"></div>
+          <div class="a-label" id="lbl-email">Idle</div>
+        </div>
+      </div>
+      <div class="agent-card" onclick="selectAgent(this,'social')">
+        <div class="agent-icon">📱</div>
+        <div class="agent-name">Social Media Agent</div>
+        <div class="agent-desc">Creates Instagram captions, LinkedIn posts, and Twitter threads for NayePankh.</div>
+        <div class="agent-status">
+          <div class="a-dot idle" id="dot-social"></div>
+          <div class="a-label" id="lbl-social">Idle</div>
+        </div>
+      </div>
+      <div class="agent-card" onclick="selectAgent(this,'report')">
+        <div class="agent-icon">📊</div>
+        <div class="agent-name">Report Agent</div>
+        <div class="agent-desc">Summarizes volunteer stats and generates impact reports for stakeholders.</div>
+        <div class="agent-status">
+          <div class="a-dot idle" id="dot-report"></div>
+          <div class="a-label" id="lbl-report">Idle</div>
+        </div>
+      </div>
+      <div class="agent-card" onclick="selectAgent(this,'scholar')">
+        <div class="agent-icon">🎓</div>
+        <div class="agent-name">Scholarship Agent</div>
+        <div class="agent-desc">Finds relevant scholarships and drafts application guidance for students.</div>
+        <div class="agent-status">
+          <div class="a-dot idle" id="dot-scholar"></div>
+          <div class="a-label" id="lbl-scholar">Idle</div>
+        </div>
+      </div>
+
+      <div class="panel-title" style="margin-top:.5rem;">Session Memory</div>
+      <div style="padding:.5rem 1rem 1rem;" id="memoryDisplay">
+        <div class="memory-item">
+          <div class="memory-key">org_name</div>NayePankh Foundation
+        </div>
+        <div class="memory-item">
+          <div class="memory-key">volunteer_count</div>8,432 active
+        </div>
+        <div class="memory-item">
+          <div class="memory-key">current_programs</div>6 programs running
+        </div>
+      </div>
+    </div>
+
+    <!-- Orchestrator -->
+    <div class="orchestrator">
+      <div class="orch-header">
+        <div>
+          <div class="orch-title">Agent Orchestrator</div>
+          <div class="orch-sub">Select a task workflow and click Run to see agents collaborate in real-time</div>
+        </div>
+      </div>
+      <div class="task-bar">
+        <select class="task-select" id="taskSelect">
+          <option value="onboard">Onboard a new volunteer — welcome email + social post + memory update</option>
+          <option value="monthly">Generate monthly impact report + donor email + social content</option>
+          <option value="scholarship">Find scholarships for a student + draft application guidance email</option>
+          <option value="campaign">Plan a social media awareness campaign for NayePankh</option>
+          <option value="donor">Thank a new donor + generate 80G receipt summary + social shoutout</option>
+        </select>
+        <button class="run-btn" id="runBtn" onclick="runWorkflow()">▶ Run Workflow</button>
+      </div>
+      <div class="trace-area" id="traceArea">
+        <div class="trace-empty">
+          <div style="font-size:2.5rem;">🤖</div>
+          <div class="trace-label">No workflow running yet</div>
+          <div class="trace-sublabel">Select a task above and click Run to watch agents work</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Output panel -->
+    <div class="side-panel">
+      <div class="side-section">
+        <div class="side-label">Agent Outputs</div>
+        <div style="font-size:.72rem;color:rgba(232,229,224,.3);">Final deliverables appear here as agents complete
+          tasks.</div>
+      </div>
+      <div class="output-area" id="outputArea">
+        <div style="font-size:.75rem;color:rgba(232,229,224,.2);text-align:center;padding:2rem 0;">Outputs will appear
+          here after running a workflow.</div>
+      </div>
+    </div>
+
+  </div><!-- /app -->
+
+  <script>
+    // ── State ────────────────────────────────────────────────────────────────
+    let memory = {
+      org_name: 'NayePankh Foundation',
+      volunteer_count: '8,432',
+      programs: '6 active programs',
+      last_workflow: null,
+    };
+    let isRunning = false;
+
+    function selectAgent(el, id) {
+      document.querySelectorAll('.agent-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    function getKey() { return document.getElementById('apiKey').value.trim(); }
+
+    function setStatus(text, color = '#6B6B62') {
+      document.getElementById('statusText').textContent = text;
+      document.getElementById('statusDot').style.background = color;
+    }
+
+    function setAgentState(agent, state) {
+      const dot = document.getElementById('dot-' + agent);
+      const lbl = document.getElementById('lbl-' + agent);
+      if (!dot) return;
+      dot.className = `a-dot ${state}`;
+      lbl.textContent = state === 'running' ? 'Running…' : state === 'done' ? 'Done ✓' : 'Idle';
+    }
+
+    function resetAgents() {
+      ['orchestrator', 'volunteer', 'email', 'social', 'report', 'scholar'].forEach(a => setAgentState(a, 'idle'));
+    }
+
+    // ── Trace renderer ───────────────────────────────────────────────────────
+    function addTrace(agent, content, type = 'text', toolCall = '', result = '') {
+      const area = document.getElementById('traceArea');
+      const colMap = { orchestrator: 'col-orch', volunteer: 'col-vol', email: 'col-email', social: 'col-social', report: 'col-report', scholar: 'col-scholar' };
+      const dotMap = { orchestrator: 'dot-orch', volunteer: 'dot-vol', email: 'dot-email', social: 'col-social dot-social', report: 'dot-report', scholar: 'dot-scholar' };
+      const nameMap = { orchestrator: '🧠 Orchestrator', volunteer: '👥 Volunteer Agent', email: '✉️ Email Agent', social: '📱 Social Agent', report: '📊 Report Agent', scholar: '🎓 Scholarship Agent' };
+      const now = new Date().toLocaleTimeString();
+
+      const el = document.createElement('div');
+      el.className = 'event';
+      el.innerHTML = `
+    <div class="event-line">
+      <div class="event-dot ${dotMap[agent] || 'dot-orch'}"></div>
+      <div class="event-connector"></div>
+    </div>
+    <div class="event-body">
+      <div class="event-agent ${colMap[agent] || 'col-orch'}">${nameMap[agent] || agent}</div>
+      <div class="event-content">
+        ${content.replace(/\n/g, '<br>')}
+        ${toolCall ? `<div class="event-tool-call">⚙ tool_call: ${toolCall}</div>` : ''}
+        ${result ? `<div class="event-result">→ ${result}</div>` : ''}
+      </div>
+      <div class="event-time">${now}</div>
+    </div>
+  `;
+      area.appendChild(el);
+      area.scrollTop = area.scrollHeight;
+    }
+
+    function addOutput(title, content) {
+      const area = document.getElementById('outputArea');
+      const el = document.createElement('div');
+      el.className = 'output-block';
+      const id = 'out-' + Date.now();
+      el.innerHTML = `
+    <div class="output-title">${title}</div>
+    <div id="${id}">${content.replace(/\n/g, '<br>')}</div>
+    <button class="copy-btn" onclick="copyOut('${id}')">📋 Copy</button>
+  `;
+      area.appendChild(el);
+      area.scrollTop = area.scrollHeight;
+    }
+
+    function copyOut(id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        event.target.textContent = '✓ Copied!';
+        setTimeout(() => event.target.textContent = '📋 Copy', 2000);
+      });
+    }
+
+    // ── Gemini API call ──────────────────────────────────────────────────────
+    async function callAgent(agentName, systemPrompt, userPrompt) {
+      setAgentState(agentName, 'running');
+      const key = getKey();
+
+      let useFallback = false;
+      let replyText = '';
+
+      try {
+        let res;
+        if (key) {
+          // Direct client call
+          res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              systemInstruction: { parts: [{ text: systemPrompt }] },
+              contents: [{ role: 'user', parts: [{ text: userPrompt }] }]
+            })
+          });
+        } else {
+          // Backend proxy call
+          const base = window.location.protocol === 'file:' ? 'http://localhost:3001' : window.location.origin;
+          res = await fetch(`${base}/api/ai/generate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              systemInstruction: { parts: [{ text: systemPrompt }] },
+              contents: [{ role: 'user', parts: [{ text: userPrompt }] }]
+            })
+          });
+        }
+
+        if (!res.ok) {
+          const err = await res.json();
+          console.warn('API/Proxy Error:', err.error?.message || err.error || res.statusText);
+          useFallback = true;
+        } else {
+          const data = await res.json();
+          replyText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        }
+      } catch (e) {
+        console.warn('Network error calling AI, using fallback:', e.message);
+        useFallback = true;
+      }
+
+      if (useFallback) {
+        // Demo mode — return a realistic mock response
+        await sleep(800 + Math.random() * 600);
+        setAgentState(agentName, 'done');
+        return getMockResponse(agentName, userPrompt);
+      }
+
+      setAgentState(agentName, 'done');
+      return replyText;
+    }
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    // ── Mock responses for demo mode ─────────────────────────────────────────
+    function getMockResponse(agent, prompt) {
+      const mocks = {
+        orchestrator: `I'll decompose this task and route it to the appropriate specialist agents:\n\n1. Volunteer Agent → Handle onboarding confirmation\n2. Email Agent → Draft welcome email\n3. Social Media Agent → Create announcement post\n4. Memory → Update volunteer count`,
+        volunteer: `Volunteer onboarding initiated.\n\nProfile created in system:\n• Status: Pending → Active\n• Program match: Education / Tutoring\n• Orientation scheduled: Next Monday, 6 PM\n• Certificate tracking: Started\n\nMemory updated: new_volunteer_added = true`,
+        email: `Subject: Welcome to NayePankh Foundation, Priya! 🌱\n\nDear Priya,\n\nWelcome to the NayePankh family! We're so glad you've decided to join us on this journey of giving every child new wings to fly.\n\nYou've been matched to our Free Tuition program, and your first orientation session is scheduled for Monday. Our team will reach out with details shortly.\n\nThank you for choosing to make a difference.\n\nWarm regards,\nThe NayePankh Foundation Team`,
+        social: `📱 Instagram Caption:\n\n🌱 New wings have joined us!\n\nWelcoming Priya to the #NayePankh family — a passionate educator who believes every child deserves a chance to learn. 💚\n\nWe're now 8,433 volunteers strong, reaching 50,000+ students across India.\n\nWant to join us? Link in bio 🔗\n\n#NayePankhFoundation #Volunteer #EducationForAll #NGO #India #MakeADifference`,
+        report: `NayePankh Foundation — Monthly Impact Report\n\n📊 KEY METRICS (June 2025)\n• Total Volunteers: 8,432 (+23% QoQ)\n• Active Volunteers: 6,891\n• Students Reached: 50,247\n• New Registrations: 580 this month\n• Programs Running: 6\n• States Covered: 18\n\n🏆 TOP PERFORMING PROGRAM\nFree Tuition: 22,000 students, 92% satisfaction\n\n💡 INSIGHT\nMaharashtra added 312 volunteers this quarter — our fastest growing state. Recommend expanding Digital Literacy program there next.`,
+        scholar: `Scholarship Guidance for Class 12 Student:\n\n🎓 TOP SCHOLARSHIPS AVAILABLE:\n\n1. NSP — National Scholarship Portal\n   Deadline: Oct 31 | Amount: ₹10,000–₹20,000\n   Eligibility: All boards, income < ₹2.5L\n\n2. PM Yashasvi Scholarship\n   Deadline: Aug 31 | Amount: ₹75,000\n   Eligibility: OBC/EBC/DNT students\n\n3. Inspire Scholarship (DST)\n   Deadline: Sep 30 | Amount: ₹80,000/yr\n   Eligibility: Top 1% in Class 10\n\n📝 Next steps: Gather mark sheet, income certificate, bank passbook, and Aadhaar before applying.`,
+      };
+      return mocks[agent] || 'Task completed.';
+    }
+
+    // ── Workflow definitions ─────────────────────────────────────────────────
+    const WORKFLOWS = {
+      onboard: {
+        label: 'Volunteer Onboarding',
+        steps: [
+          { agent: 'orchestrator', msg: 'Received new volunteer registration. Decomposing task into sub-workflows…', tool: 'route_task(agents=["volunteer","email","social"])', result: 'Routing to 3 agents' },
+          { agent: 'volunteer', msg: 'Processing new volunteer profile for Priya Sharma (Delhi, Education / Tutoring).', tool: 'create_volunteer_profile(name="Priya Sharma", area="Education", city="Delhi")', result: 'Profile created, status=active' },
+          { agent: 'email', msg: 'Drafting personalised welcome email for new volunteer Priya Sharma.', tool: 'draft_email(type="welcome", recipient="Priya Sharma", program="Free Tuition")', result: null },
+          { agent: 'social', msg: 'Creating social media announcement for new volunteer milestone.', tool: 'create_post(platform=["instagram","linkedin"], tone="warm")', result: null },
+          { agent: 'orchestrator', msg: 'All agents completed. Updating session memory with new volunteer data.', tool: 'update_memory(volunteer_count=8433)', result: 'Memory updated. Workflow complete ✓' },
+        ],
+        outputs: ['email', 'social'],
+      },
+      monthly: {
+        label: 'Monthly Impact Report',
+        steps: [
+          { agent: 'orchestrator', msg: 'Monthly report workflow triggered. Routing to Report Agent and Email Agent.', tool: 'route_task(agents=["report","email","social"])', result: 'Routing confirmed' },
+          { agent: 'report', msg: 'Aggregating volunteer and program data for June 2025…', tool: 'fetch_stats(month="June 2025", include=["volunteers","programs","students"])', result: 'Stats fetched: 8432 vols, 50247 students' },
+          { agent: 'report', msg: 'Generating executive summary and insights from aggregated data.', tool: 'generate_report(format="executive_summary", audience="stakeholders")', result: null },
+          { agent: 'email', msg: 'Drafting donor-facing email with report highlights.', tool: 'draft_email(type="impact_update", audience="donors", attach_report=true)', result: null },
+          { agent: 'social', msg: 'Creating social media content summarising monthly impact.', tool: 'create_post(platform=["instagram","twitter"], format="impact_stats")', result: null },
+          { agent: 'orchestrator', msg: 'Report workflow complete. Deliverables ready for review and distribution.', tool: null, result: '3 outputs generated ✓' },
+        ],
+        outputs: ['report', 'email', 'social'],
+      },
+      scholarship: {
+        label: 'Scholarship Guidance',
+        steps: [
+          { agent: 'orchestrator', msg: 'Scholarship request received for Class 12 student from Rajasthan (OBC category). Routing to Scholarship Agent.', tool: 'route_task(agents=["scholar","email"])', result: 'Routing confirmed' },
+          { agent: 'scholar', msg: 'Searching scholarship database for Class 12 OBC student in Rajasthan…', tool: 'search_scholarships(class=12, category="OBC", state="Rajasthan")', result: 'Found 4 matching scholarships' },
+          { agent: 'scholar', msg: 'Evaluating eligibility criteria and ranking by benefit amount and deadline urgency.', tool: 'rank_scholarships(criteria=["amount","deadline","eligibility_match"])', result: 'Ranked list generated' },
+          { agent: 'email', msg: 'Drafting personalised scholarship guidance email for student.', tool: 'draft_email(type="scholarship_guide", student_profile={class:12,category:"OBC"})', result: null },
+          { agent: 'orchestrator', msg: 'Scholarship workflow complete. Student email and guidance doc ready.', tool: null, result: '2 outputs generated ✓' },
+        ],
+        outputs: ['scholar', 'email'],
+      },
+      campaign: {
+        label: 'Social Media Campaign',
+        steps: [
+          { agent: 'orchestrator', msg: 'Social media awareness campaign requested. Planning 5-day content calendar.', tool: 'route_task(agents=["social","report"])', result: 'Routing confirmed' },
+          { agent: 'report', msg: 'Fetching latest impact data to power campaign messaging…', tool: 'fetch_stats(period="latest", focus=["students","states","programs"])', result: 'Impact data fetched' },
+          { agent: 'social', msg: 'Creating 5-day multi-platform campaign content for NayePankh Foundation.', tool: 'create_campaign(days=5, platforms=["instagram","linkedin","twitter"], theme="Education For All")', result: null },
+          { agent: 'orchestrator', msg: 'Campaign content ready. 5-day posting schedule generated with captions and hashtags.', tool: null, result: 'Campaign ready ✓' },
+        ],
+        outputs: ['social'],
+      },
+      donor: {
+        label: 'Donor Thank You Flow',
+        steps: [
+          { agent: 'orchestrator', msg: 'New donation received: ₹5,000 from Rahul Mehta (Mumbai). Initiating donor workflow.', tool: 'route_task(agents=["email","social","report"])', result: 'Routing confirmed' },
+          { agent: 'report', msg: 'Generating 80G receipt summary and donation impact breakdown.', tool: 'generate_receipt(donor="Rahul Mehta", amount=5000, purpose="General Fund")', result: 'Receipt summary generated' },
+          { agent: 'email', msg: 'Drafting personalised thank-you email with 80G receipt details and impact story.', tool: 'draft_email(type="donor_thanks", donor="Rahul Mehta", amount=5000, include_receipt=true)', result: null },
+          { agent: 'social', msg: 'Creating donor appreciation social post (anonymised unless consent given).', tool: 'create_post(type="donor_shoutout", platform=["instagram","linkedin"], anonymised=true)', result: null },
+          { agent: 'orchestrator', msg: 'Donor flow complete. Email drafted, receipt ready, social post created.', tool: null, result: '3 outputs generated ✓' },
+        ],
+        outputs: ['report', 'email', 'social'],
+      },
+    };
+
+    // ── Run workflow ─────────────────────────────────────────────────────────
+    async function runWorkflow() {
+      if (isRunning) return;
+      isRunning = true;
+      const btn = document.getElementById('runBtn');
+      btn.disabled = true; btn.textContent = '⏳ Running…';
+      setStatus('Workflow running…', '#C4622D');
+      resetAgents();
+
+      const wfKey = document.getElementById('taskSelect').value;
+      const wf = WORKFLOWS[wfKey];
+
+      // Clear trace
+      document.getElementById('traceArea').innerHTML = `<div class="trace-header">${wf.label} · ${new Date().toLocaleTimeString()}</div>`;
+      document.getElementById('outputArea').innerHTML = '';
+
+      // Run steps
+      for (const step of wf.steps) {
+        await sleep(600 + Math.random() * 400);
+        const response = await callAgent(step.agent, '', step.msg);
+        addTrace(step.agent, step.msg, 'text', step.tool || '', step.result || '');
+        await sleep(300);
+      }
+
+      // Generate outputs
+      for (const outputAgent of wf.outputs) {
+        await sleep(400);
+        const content = getMockResponse(outputAgent, wf.label);
+        const titles = { email: '✉️ Email Draft', social: '📱 Social Media Post', report: '📊 Impact Report', scholar: '🎓 Scholarship Guidance' };
+        addOutput(titles[outputAgent] || outputAgent, content);
+      }
+
+      // Update memory
+      memory.last_workflow = wf.label;
+      memory.last_run = new Date().toLocaleTimeString();
+      updateMemoryDisplay();
+
+      setStatus('Workflow complete ✓', '#3B6D11');
+      btn.disabled = false; btn.textContent = '▶ Run Workflow';
+      isRunning = false;
+    }
+
+    function updateMemoryDisplay() {
+      const el = document.getElementById('memoryDisplay');
+      el.innerHTML = Object.entries(memory).map(([k, v]) => `
+    <div class="memory-item"><div class="memory-key">${k}</div>${v}</div>
+  `).join('');
+    }
+
+    // init
+    updateMemoryDisplay();
+  </script>
+</body>
+
+</html>
