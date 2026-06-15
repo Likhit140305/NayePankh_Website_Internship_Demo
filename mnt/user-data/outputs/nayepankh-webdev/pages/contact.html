@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Contact — NayePankh Foundation</title>
+<link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+<nav>
+  <a href="../index.html" class="nav-logo" style="display:flex;align-items:center;gap:.5rem;"><img src="../../../../../logo_new.png" alt="NayePankh" style="height:40px;width:auto;background:#fff;padding:3px 6px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.05);"/></a>
+  <div class="nav-links">
+    <a href="../index.html">Home</a><a href="programs.html">Programs</a><a href="events.html">Events</a><a href="blog.html">Blog</a><a href="contact.html">Contact</a>
+    <button class="theme-btn" id="themeBtn">Dark</button>
+    <a href="volunteer.html" class="nav-cta">Volunteer</a>
+  </div>
+</nav>
+
+<section style="padding-top:7rem;">
+  <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;">
+    <div>
+      <p class="section-label">Reach out</p>
+      <h1 class="section-title">Get in <em>touch</em></h1>
+      <p style="color:var(--muted);margin-bottom:2rem;line-height:1.8;">Whether you want to volunteer, donate, partner, or just say hello — we'd love to hear from you.</p>
+      <div style="display:flex;flex-direction:column;gap:1.25rem;">
+        <div class="card" style="border-left:3px solid var(--sage);display:flex;gap:1rem;align-items:center;">
+          <span style="font-size:1.25rem;">🌐</span>
+          <div><div style="font-weight:500;font-size:.9rem;">Website</div><a href="https://www.nayepankh.com" target="_blank" style="font-size:.85rem;color:var(--sage);text-decoration:none;">www.nayepankh.com</a></div>
+        </div>
+        <div class="card" style="border-left:3px solid var(--clay);display:flex;gap:1rem;align-items:center;">
+          <span style="font-size:1.25rem;">📧</span>
+          <div><div style="font-weight:500;font-size:.9rem;">Email</div><div style="font-size:.85rem;color:var(--muted);">contact@nayepankh.com</div></div>
+        </div>
+        <div class="card" style="border-left:3px solid var(--sage-light);display:flex;gap:1rem;align-items:center;">
+          <span style="font-size:1.25rem;">📍</span>
+          <div><div style="font-weight:500;font-size:.9rem;">Registration</div><div style="font-size:.85rem;color:var(--muted);">80G & 12A Registered · UP Govt. Registered NGO</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="background:var(--cream);border:1px solid var(--border);">
+      <h3 style="font-weight:500;font-size:1.05rem;margin-bottom:1.25rem;">Send us a message</h3>
+      <form id="contactForm">
+        <div class="form-group"><label>Your name</label><input type="text" placeholder="Priya Sharma" required /></div>
+        <div class="form-group"><label>Email</label><input type="email" placeholder="priya@example.com" required /></div>
+        <div class="form-group"><label>Subject</label>
+          <select><option>General enquiry</option><option>Volunteering</option><option>Donations / 80G</option><option>Partnership</option><option>Internship</option><option>Media / Press</option></select>
+        </div>
+        <div class="form-group"><label>Message</label><textarea placeholder="How can we help?"></textarea></div>
+        <button type="submit" class="btn-primary" style="width:100%;">Send Message →</button>
+      </form>
+      <div id="contactSuccess" style="display:none;text-align:center;padding:2rem;color:var(--sage);">
+        <div style="font-size:2rem;margin-bottom:.5rem;">✓</div>
+        <strong>Message sent!</strong>
+        <p style="color:var(--muted);font-size:.85rem;margin-top:.4rem;">We'll get back to you within 2–3 business days.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div><div class="footer-logo" style="display:flex;align-items:center;gap:.5rem;"><img src="../../../../../logo_new.png" alt="" style="height:34px;width:auto;background:#fff;padding:3px 6px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.05);"/></div><div class="footer-copy">© 2025 NayePankh Foundation. Developed by Likhit Hegde.</div></div>
+    <div class="footer-links"><a href="programs.html">Programs</a><a href="events.html">Events</a><a href="volunteer.html">Volunteer</a><a href="contact.html">Contact</a></div>
+  </div>
+</footer>
+<script src="../js/main.js"></script>
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault(); this.style.display='none';
+  document.getElementById('contactSuccess').style.display='block';
+});
+</script>
+</body>
+</html>

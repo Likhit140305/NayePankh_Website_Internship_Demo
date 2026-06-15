@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Volunteer — NayePankh Foundation</title>
+<link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+<nav>
+  <a href="../index.html" class="nav-logo" style="display:flex;align-items:center;gap:.5rem;"><img src="../../../../../logo_new.png" alt="NayePankh" style="height:40px;width:auto;background:#fff;padding:3px 6px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.05);"/></a>
+  <div class="nav-links">
+    <a href="../index.html">Home</a><a href="programs.html">Programs</a><a href="events.html">Events</a><a href="blog.html">Blog</a><a href="contact.html">Contact</a>
+    <button class="theme-btn" id="themeBtn">Dark</button>
+    <a href="volunteer.html" class="nav-cta">Volunteer</a>
+  </div>
+</nav>
+
+<section style="padding-top:7rem;">
+  <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;">
+    <div>
+      <p class="section-label">Join us</p>
+      <h1 class="section-title">Your skills can change a <em>child's future</em></h1>
+      <p style="color:var(--muted);margin-bottom:1.5rem;line-height:1.8;">Joining NayePankh takes 3 simple steps. No experience required — just a genuine desire to help.</p>
+
+      <div style="display:flex;flex-direction:column;gap:2rem;margin-top:2rem;">
+        <div style="display:flex;gap:1.25rem;">
+          <div style="font-family:var(--ff-display);font-size:1.5rem;font-weight:700;color:var(--sage);width:2rem;flex-shrink:0;">01</div>
+          <div><div style="font-weight:500;margin-bottom:.25rem;">Fill the form</div><div style="font-size:.875rem;color:var(--muted);">Tell us your skills, availability, and interests.</div></div>
+        </div>
+        <div style="display:flex;gap:1.25rem;">
+          <div style="font-family:var(--ff-display);font-size:1.5rem;font-weight:700;color:var(--sage);width:2rem;flex-shrink:0;">02</div>
+          <div><div style="font-weight:500;margin-bottom:.25rem;">Quick orientation</div><div style="font-size:.875rem;color:var(--muted);">A short online session to meet the team.</div></div>
+        </div>
+        <div style="display:flex;gap:1.25rem;">
+          <div style="font-family:var(--ff-display);font-size:1.5rem;font-weight:700;color:var(--sage);width:2rem;flex-shrink:0;">03</div>
+          <div><div style="font-weight:500;margin-bottom:.25rem;">Start making impact</div><div style="font-size:.875rem;color:var(--muted);">Get matched and begin contributing within a week.</div></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:2.5rem;border-left:3px solid var(--sage);">
+        <div style="font-weight:500;margin-bottom:.4rem;">What you get</div>
+        <ul style="font-size:.85rem;color:var(--muted);list-style:none;display:flex;flex-direction:column;gap:.3rem;">
+          <li>✓ Certificate of Volunteering</li>
+          <li>✓ Letter of Recommendation</li>
+          <li>✓ Real-world experience</li>
+          <li>✓ Mentorship and training</li>
+          <li>✓ Internship opportunities</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="background:var(--cream);border:1px solid var(--border);">
+      <h3 style="font-weight:500;font-size:1.05rem;margin-bottom:1.25rem;">Volunteer Registration</h3>
+      <form id="volForm">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="form-group"><label>First name</label><input type="text" placeholder="Priya" required /></div>
+          <div class="form-group"><label>Last name</label><input type="text" placeholder="Sharma" required /></div>
+        </div>
+        <div class="form-group"><label>Email</label><input type="email" placeholder="priya@example.com" required /></div>
+        <div class="form-group"><label>Phone</label><input type="tel" placeholder="+91 98765 43210" /></div>
+        <div class="form-group"><label>Area of interest</label>
+          <select>
+            <option value="">Select a program</option>
+            <option>Education / Tutoring</option><option>Digital Literacy</option>
+            <option>Women Empowerment</option><option>Tech / Development</option>
+            <option>Design / Creative</option><option>Content & Social Media</option>
+            <option>Fundraising</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Why do you want to volunteer?</label><textarea placeholder="Tell us about yourself..."></textarea></div>
+        <button type="submit" class="btn-primary" style="width:100%;">Submit Application →</button>
+      </form>
+      <div id="volSuccess" style="display:none;text-align:center;padding:2rem;color:var(--sage);">
+        <div style="font-size:2.5rem;margin-bottom:.5rem;">✓</div>
+        <strong>Application received!</strong>
+        <p style="color:var(--muted);font-size:.85rem;margin-top:.4rem;">We'll be in touch within 2–3 business days. Welcome to NayePankh!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div><div class="footer-logo" style="display:flex;align-items:center;gap:.5rem;"><img src="../../../../../logo_new.png" alt="" style="height:34px;width:auto;background:#fff;padding:3px 6px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.05);"/></div><div class="footer-copy">© 2025 NayePankh Foundation. Developed by Likhit Hegde.</div></div>
+    <div class="footer-links"><a href="programs.html">Programs</a><a href="events.html">Events</a><a href="volunteer.html">Volunteer</a><a href="contact.html">Contact</a></div>
+  </div>
+</footer>
+<script src="../js/main.js"></script>
+<script>
+document.getElementById('volForm').addEventListener('submit', function(e) {
+  e.preventDefault(); this.style.display='none';
+  document.getElementById('volSuccess').style.display='block';
+});
+</script>
+</body>
+</html>
