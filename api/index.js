@@ -8,15 +8,26 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Normalization Middleware: strip '/api' prefix if present to support all rewrites uniformly
+app.use((req, res, next) => {
+  if (req.url.startsWith('/api')) {
+    req.url = req.url.substring(4);
+    if (!req.url.startsWith('/')) {
+      req.url = '/' + req.url;
+    }
+  }
+  next();
+});
+
 // API Routes
-app.use('/api/auth',       require('../routes/auth'));
-app.use('/api/volunteers', require('../routes/volunteers'));
-app.use('/api/programs',   require('../routes/programs'));
-app.use('/api/stats',      require('../routes/stats'));
-app.use('/api/ai',         require('../routes/ai'));
+app.use('/auth',       require('../routes/auth'));
+app.use('/volunteers', require('../routes/volunteers'));
+app.use('/programs',   require('../routes/programs'));
+app.use('/stats',      require('../routes/stats'));
+app.use('/ai',         require('../routes/ai'));
 
 // API Docs (inline)
-app.get('/api', (req, res) => {
+app.get('/', (req, res) => {
   res.json({
     name: 'NayePankh Foundation API',
     version: '1.0.0',
