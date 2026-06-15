@@ -2,7 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 
-const DB_PATH = path.join(__dirname, '..', 'nayepankh.json');
+const isServerless = process.env.VERCEL || process.env.NOW_REGION || false;
+let DB_PATH = path.join(__dirname, '..', 'nayepankh.json');
 
 // Initialize store
 let store = {
@@ -10,6 +11,21 @@ let store = {
   volunteers: [],
   programs: []
 };
+
+// If in serverless environment, copy seed file to /tmp and use it
+if (isServerless) {
+  const tmpPath = path.join('/tmp', 'nayepankh.json');
+  try {
+    if (!fs.existsSync(tmpPath)) {
+      if (fs.existsSync(DB_PATH)) {
+        fs.copyFileSync(DB_PATH, tmpPath);
+      }
+    }
+    DB_PATH = tmpPath;
+  } catch (err) {
+    console.error('Failed to copy database to /tmp:', err);
+  }
+}
 
 // Load existing data if available
 if (fs.existsSync(DB_PATH)) {
@@ -21,7 +37,11 @@ if (fs.existsSync(DB_PATH)) {
 }
 
 function save() {
-  fs.writeFileSync(DB_PATH, JSON.stringify(store, null, 2), 'utf8');
+  try {
+    fs.writeFileSync(DB_PATH, JSON.stringify(store, null, 2), 'utf8');
+  } catch (err) {
+    console.error('Database write error (read-only environment):', err.message);
+  }
 }
 
 // ── Database API Mocking better-sqlite3 ──────────────────────────────────
