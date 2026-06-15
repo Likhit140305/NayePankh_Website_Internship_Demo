@@ -1,0 +1,10 @@
+{
+  "ignore": [
+    "nayepankh.json",
+    "nayepankh.db",
+    "nayepankh.db-journal",
+    "nayepankh.db-wal",
+    "nayepankh.db-shm",
+    "node_modules/**"
+  ]
+}

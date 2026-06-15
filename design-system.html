@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>NayePankh — UI/UX Design System & Prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--sage:#2D5A3D;--sage-l:#4A7C59;--sage-p:#EBF3EE;--clay:#C4622D;--cream:#FAF8F4;--ink:#1A1A18;--muted:#6B6B62;--b:rgba(26,26,24,.1);--r:4px;--ffd:'Fraunces',Georgia,serif;--ffb:'DM Sans',system-ui,sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--ffb);background:#F5F3EF;color:var(--ink);font-size:15px;line-height:1.7;}
+
+/* layout */
+.header{background:var(--ink);color:#FAF8F4;padding:2rem;position:sticky;top:0;z-index:50;}
+.header h1{font-family:var(--ffd);font-size:1.4rem;font-weight:700;}
+.header p{font-size:.8rem;opacity:.5;margin-top:.25rem;}
+.tabs{display:flex;gap:.5rem;padding:.75rem 2rem;background:#EDEAE6;border-bottom:1px solid var(--b);overflow-x:auto;}
+.tab{background:none;border:1px solid transparent;border-radius:var(--r);padding:.45rem 1rem;cursor:pointer;font-family:var(--ffb);font-size:.8rem;font-weight:500;color:var(--muted);white-space:nowrap;transition:all .2s;}
+.tab.active{background:var(--ink);color:#FAF8F4;border-color:var(--ink);}
+.tab:hover:not(.active){border-color:var(--b);color:var(--ink);}
+.panel{display:none;padding:2rem;max-width:1100px;margin:0 auto;}
+.panel.active{display:block;}
+
+/* design system cards */
+h2{font-family:var(--ffd);font-size:1.3rem;font-weight:700;margin-bottom:.25rem;}
+h3{font-size:.85rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;margin-top:1.75rem;}
+.row{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.swatch{width:80px;text-align:center;}
+.swatch-box{height:56px;border-radius:var(--r);margin-bottom:.4rem;border:1px solid rgba(0,0,0,.06);}
+.swatch-label{font-size:.7rem;color:var(--muted);}
+.swatch-hex{font-size:.65rem;font-family:monospace;color:var(--muted);}
+.type-row{background:#fff;border:1px solid var(--b);border-radius:6px;padding:1rem 1.25rem;margin-bottom:.75rem;}
+.type-spec{font-size:.75rem;color:var(--muted);margin-bottom:.3rem;font-family:monospace;}
+.comp-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.comp-card{background:#fff;border:1px solid var(--b);border-radius:6px;padding:1.25rem;display:flex;flex-direction:column;align-items:flex-start;gap:.75rem;}
+.comp-label{font-size:.7rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;}
+
+/* user flow */
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:2rem;}
+.flow-step{background:#fff;border:1px solid var(--b);border-radius:6px;padding:.6rem 1rem;font-size:.8rem;font-weight:500;}
+.flow-step.start{background:var(--sage);color:#FAF8F4;border-color:var(--sage);}
+.flow-step.end{background:var(--sage-p);color:var(--sage);border-color:var(--sage);}
+.flow-step.decision{background:#FAEEDA;color:#854F0B;border-color:#EF9F27;border-radius:24px;}
+.flow-arrow{color:var(--muted);font-size:1rem;}
+.annotation{font-size:.75rem;color:var(--muted);background:#fff;border:1px solid var(--b);border-left:3px solid var(--clay);border-radius:0 4px 4px 0;padding:.5rem .75rem;margin:.25rem 0 .75rem;}
+
+/* mockups */
+.device-frame{background:#fff;border:1px solid var(--b);border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.07);}
+.device-bar{background:#EDEAE6;padding:.5rem 1rem;display:flex;align-items:center;gap:.5rem;}
+.device-dot{width:8px;height:8px;border-radius:50%;}
+.screen{padding:0;}
+
+/* mini components in mockup */
+.m-nav{background:var(--cream);border-bottom:1px solid var(--b);padding:.6rem 1.25rem;display:flex;align-items:center;justify-content:space-between;font-size:.75rem;}
+.m-nav-logo{font-family:var(--ffd);color:var(--sage);font-weight:700;font-size:.9rem;}
+.m-hero{background:var(--cream);padding:2rem 1.25rem;}
+.m-hero h1{font-family:var(--ffd);font-size:1.75rem;font-weight:700;line-height:1.2;margin-bottom:.5rem;}
+.m-hero h1 em{font-style:italic;font-weight:300;color:var(--sage);}
+.m-hero p{font-size:.75rem;color:var(--muted);margin-bottom:1rem;}
+.m-btn{background:var(--sage);color:#FAF8F4;border:none;padding:.5rem 1rem;border-radius:var(--r);font-size:.75rem;cursor:pointer;font-family:var(--ffb);display:inline-block;}
+.m-section{padding:1.25rem;background:var(--sage-p);}
+.m-section-label{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--clay);font-weight:500;margin-bottom:.25rem;}
+.m-section h2{font-family:var(--ffd);font-size:1.1rem;font-weight:700;margin-bottom:.75rem;}
+.m-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;}
+.m-card{background:#fff;border-radius:4px;padding:.65rem;font-size:.7rem;border:1px solid var(--b);}
+.m-card-icon{font-size:1rem;margin-bottom:.25rem;}
+.m-card-title{font-weight:500;margin-bottom:.15rem;font-size:.7rem;}
+.m-card-desc{font-size:.65rem;color:var(--muted);line-height:1.4;}
+
+.issues-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
+.issue-card{background:#fff;border:1px solid var(--b);border-radius:6px;padding:1.25rem;}
+.issue-tag{display:inline-block;font-size:.7rem;font-weight:500;padding:.2rem .6rem;border-radius:20px;margin-bottom:.6rem;}
+.before-after{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.ba-panel{background:#fff;border:1px solid var(--b);border-radius:6px;padding:1rem;}
+.ba-label{font-size:.7rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem;}
+.ba-label.before{color:#A32D2D;}
+.ba-label.after{color:var(--sage);}
+
+@media(max-width:640px){.m-cards{grid-template-columns:1fr 1fr;}.issues-grid,.before-after{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>NayePankh Foundation — UI/UX Design Submission</h1>
+  <p>Design system · User flows · Annotated mockup · UX audit — Option 2</p>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="show('ds',this)">Design System</button>
+  <button class="tab" onclick="show('flows',this)">User Flows</button>
+  <button class="tab" onclick="show('mockup',this)">Homepage Mockup</button>
+  <button class="tab" onclick="show('audit',this)">UX Audit</button>
+  <button class="tab" onclick="show('screens',this)">Multiple Screens</button>
+</div>
+
+<!-- DESIGN SYSTEM -->
+<div class="panel active" id="ds">
+  <h2>Design System</h2>
+  <p style="color:var(--muted);font-size:.9rem;margin-bottom:1.5rem;">Tokens, typography, and component library for NayePankh Foundation's digital presence.</p>
+
+  <h3>Color Palette</h3>
+  <div class="row">
+    <div class="swatch"><div class="swatch-box" style="background:#2D5A3D;"></div><div class="swatch-label">Sage</div><div class="swatch-hex">#2D5A3D</div></div>
+    <div class="swatch"><div class="swatch-box" style="background:#4A7C59;"></div><div class="swatch-label">Sage Light</div><div class="swatch-hex">#4A7C59</div></div>
+    <div class="swatch"><div class="swatch-box" style="background:#EBF3EE;"></div><div class="swatch-label">Sage Pale</div><div class="swatch-hex">#EBF3EE</div></div>
+    <div class="swatch"><div class="swatch-box" style="background:#C4622D;"></div><div class="swatch-label">Clay</div><div class="swatch-hex">#C4622D</div></div>
+    <div class="swatch"><div class="swatch-box" style="background:#FAF8F4;border:1px solid #ddd;"></div><div class="swatch-label">Cream</div><div class="swatch-hex">#FAF8F4</div></div>
+    <div class="swatch"><div class="swatch-box" style="background:#1A1A18;"></div><div class="swatch-label">Ink</div><div class="swatch-hex">#1A1A18</div></div>
+    <div class="swatch"><div class="swatch-box" style="background:#6B6B62;"></div><div class="swatch-label">Muted</div><div class="swatch-hex">#6B6B62</div></div>
+  </div>
+  <div class="annotation">Sage is the primary brand color — used for CTAs, nav accents, and trust signals. Clay is the accent — used for eyebrows, highlights, and urgency. The cream base is warm, not stark white, evoking handmade paper and human touch.</div>
+
+  <h3>Typography</h3>
+  <div class="type-row"><div class="type-spec">Fraunces · 48px · weight 700</div><div style="font-family:var(--ffd);font-size:2.5rem;font-weight:700;">Give every child new wings.</div></div>
+  <div class="type-row"><div class="type-spec">Fraunces · 48px · weight 300 · italic</div><div style="font-family:var(--ffd);font-size:2.5rem;font-weight:300;font-style:italic;color:#4A7C59;">new wings.</div></div>
+  <div class="type-row"><div class="type-spec">DM Sans · 16px · weight 400 · body</div><div style="font-family:var(--ffb);font-size:1rem;color:#6B6B62;">NayePankh is a volunteer-driven NGO working to make quality education accessible to every child in India.</div></div>
+  <div class="type-row"><div class="type-spec">DM Sans · 11px · weight 500 · uppercase · eyebrow</div><div style="font-family:var(--ffb);font-size:.7rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:#C4622D;">NayePankh Foundation · Since 2020</div></div>
+  <div class="annotation">Fraunces (variable serif) brings warmth and human character. DM Sans keeps body copy clean and highly readable across devices. The italic/light weight of Fraunces paired with the bold creates tension and visual interest without extra colors.</div>
+
+  <h3>Components</h3>
+  <div class="comp-row">
+    <div class="comp-card">
+      <div class="comp-label">Primary button</div>
+      <button style="background:#2D5A3D;color:#FAF8F4;border:none;padding:.7rem 1.5rem;border-radius:4px;font-family:var(--ffb);font-size:.875rem;font-weight:500;cursor:pointer;">Volunteer Now</button>
+    </div>
+    <div class="comp-card">
+      <div class="comp-label">Outline button</div>
+      <button style="background:transparent;color:#1A1A18;border:1px solid rgba(26,26,24,.2);padding:.7rem 1.5rem;border-radius:4px;font-family:var(--ffb);font-size:.875rem;font-weight:500;cursor:pointer;">Learn More</button>
+    </div>
+    <div class="comp-card">
+      <div class="comp-label">Badge / tag</div>
+      <div style="display:flex;flex-direction:column;gap:.5rem;">
+        <span style="background:#EBF3EE;color:#2D5A3D;font-size:.75rem;padding:.25rem .75rem;border-radius:20px;font-weight:500;display:inline-block;">Education</span>
+        <span style="background:#FAECE7;color:#993C1D;font-size:.75rem;padding:.25rem .75rem;border-radius:20px;font-weight:500;display:inline-block;">Urgent</span>
+      </div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-label">Input field</div>
+      <input type="text" placeholder="Your email" style="font-family:var(--ffb);font-size:.875rem;padding:.6rem .85rem;border:1px solid rgba(26,26,24,.15);border-radius:4px;background:#FAF8F4;color:#1A1A18;width:100%;outline:none;"/>
+    </div>
+    <div class="comp-card">
+      <div class="comp-label">Stat card</div>
+      <div style="background:#EBF3EE;border-radius:6px;padding:1rem;width:100%;">
+        <div style="font-family:var(--ffd);font-size:1.75rem;font-weight:700;color:#2D5A3D;">50,000+</div>
+        <div style="font-size:.75rem;color:#6B6B62;">students reached</div>
+      </div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-label">Program card</div>
+      <div style="background:#FAF8F4;border:1px solid rgba(26,26,24,.1);border-radius:6px;padding:1rem;border-left:3px solid #2D5A3D;width:100%;">
+        <div style="font-size:1.1rem;margin-bottom:.3rem;">📚</div>
+        <div style="font-weight:500;font-size:.8rem;margin-bottom:.25rem;">Free Tuition</div>
+        <div style="font-size:.75rem;color:#6B6B62;">Class 1–12 across India</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Spacing Scale</h3>
+  <div class="row" style="align-items:flex-end;">
+    <div style="text-align:center;"><div style="background:#2D5A3D;width:4px;height:4px;margin:0 auto .4rem;"></div><div style="font-size:.65rem;color:var(--muted);">4px</div></div>
+    <div style="text-align:center;"><div style="background:#2D5A3D;width:8px;height:8px;margin:0 auto .4rem;"></div><div style="font-size:.65rem;color:var(--muted);">8px</div></div>
+    <div style="text-align:center;"><div style="background:#2D5A3D;width:12px;height:12px;margin:0 auto .4rem;"></div><div style="font-size:.65rem;color:var(--muted);">12px</div></div>
+    <div style="text-align:center;"><div style="background:#2D5A3D;width:16px;height:16px;margin:0 auto .4rem;"></div><div style="font-size:.65rem;color:var(--muted);">16px</div></div>
+    <div style="text-align:center;"><div style="background:#2D5A3D;width:24px;height:24px;margin:0 auto .4rem;"></div><div style="font-size:.65rem;color:var(--muted);">24px</div></div>
+    <div style="text-align:center;"><div style="background:#2D5A3D;width:32px;height:32px;margin:0 auto .4rem;"></div><div style="font-size:.65rem;color:var(--muted);">32px</div></div>
+    <div style="text-align:center;"><div style="background:#2D5A3D;width:48px;height:48px;margin:0 auto .4rem;"></div><div style="font-size:.65rem;color:var(--muted);">48px</div></div>
+    <div style="text-align:center;"><div style="background:#2D5A3D;width:64px;height:64px;margin:0 auto .4rem;"></div><div style="font-size:.65rem;color:var(--muted);">64px</div></div>
+  </div>
+</div>
+
+<!-- USER FLOWS -->
+<div class="panel" id="flows">
+  <h2>User Flows</h2>
+  <p style="color:var(--muted);font-size:.9rem;margin-bottom:1.5rem;">Key journeys mapped for three primary user types.</p>
+
+  <h3>Flow 1 — Volunteer Registration</h3>
+  <div class="flow">
+    <div class="flow-step start">Land on homepage</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Click "Volunteer"</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Registration form</div><div class="flow-arrow">→</div>
+    <div class="flow-step decision">Valid inputs?</div><div class="flow-arrow">→</div>
+    <div class="flow-step end">Success + confirmation email</div>
+  </div>
+  <div class="annotation">Error path: Invalid inputs → inline field-level error messages → user corrects → resubmit. On success, confirm what happens next ("We'll email you within 2–3 days") to reduce anxiety and drop-off.</div>
+
+  <h3>Flow 2 — Donor Journey</h3>
+  <div class="flow">
+    <div class="flow-step start">Arrives via social media</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Impact stats on hero</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Scrolls to Donate section</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Picks amount</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Payment gateway</div><div class="flow-arrow">→</div>
+    <div class="flow-step end">80G receipt by email</div>
+  </div>
+  <div class="annotation">Trust signals matter here: show "₹500 = 1 month of books" breakdowns to make the donation tangible. 80G tax benefit is a strong conversion driver for Indian donors — mention it before the CTA.</div>
+
+  <h3>Flow 3 — Student / Parent seeking help</h3>
+  <div class="flow">
+    <div class="flow-step start">Google search: "free tuition NGO"</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Programs page</div><div class="flow-arrow">→</div>
+    <div class="flow-step decision">Program matches need?</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Contact page</div><div class="flow-arrow">→</div>
+    <div class="flow-step end">Enquiry submitted</div>
+  </div>
+  <div class="annotation">This flow is currently broken on the existing NayePankh site — there is no dedicated "get help" path for beneficiaries. A separate "I need help" CTA alongside the "Volunteer" CTA on the homepage would serve this audience.</div>
+
+  <h3>Flow 4 — Intern application</h3>
+  <div class="flow">
+    <div class="flow-step start">Homepage</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Blog / About</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Internship page (missing)</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Role selection</div><div class="flow-arrow">→</div>
+    <div class="flow-step">Application form</div><div class="flow-arrow">→</div>
+    <div class="flow-step end">Submitted</div>
+  </div>
+  <div class="annotation">Recommendation: Add a dedicated Internships page. NayePankh runs one of India's most active student internship programs — it should be a top-level nav item, not buried.</div>
+</div>
+
+<!-- MOCKUP -->
+<div class="panel" id="mockup">
+  <h2>Homepage Mockup</h2>
+  <p style="color:var(--muted);font-size:.9rem;margin-bottom:1.5rem;">Annotated wireframe-quality mockup of the proposed homepage redesign.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 280px;gap:1.5rem;align-items:start;">
+    <div class="device-frame">
+      <div class="device-bar">
+        <div class="device-dot" style="background:#FF5F56;"></div>
+        <div class="device-dot" style="background:#FFBD2E;"></div>
+        <div class="device-dot" style="background:#27C93F;"></div>
+        <div style="flex:1;background:#fff;border-radius:3px;padding:.25rem .75rem;font-size:.65rem;color:#999;margin-left:.5rem;">nayepankh.com</div>
+      </div>
+      <div class="screen">
+        <div class="m-nav">
+          <span class="m-nav-logo">NayePankh Foundation</span>
+          <div style="display:flex;gap:1rem;font-size:.7rem;color:var(--muted);">
+            <span>Programs</span><span>Events</span><span>Blog</span>
+            <span style="background:var(--sage);color:#FAF8F4;padding:.2rem .6rem;border-radius:3px;">Volunteer</span>
+          </div>
+        </div>
+        <div class="m-hero">
+          <div style="font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:#C4622D;font-weight:500;margin-bottom:.5rem;">NayePankh Foundation · Since 2020</div>
+          <h1>Give every child<br><em>new wings</em> to fly.</h1>
+          <p>Volunteer-driven NGO for education and empowerment across India.</p>
+          <div style="display:flex;gap:.5rem;">
+            <span class="m-btn">Become a Volunteer</span>
+            <span style="border:1px solid rgba(26,26,24,.15);padding:.5rem 1rem;border-radius:4px;font-size:.75rem;cursor:pointer;">Our Programs</span>
+          </div>
+        </div>
+        <div style="background:#fff;padding:1rem 1.25rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">
+            <div style="background:#2D5A3D;color:#FAF8F4;border-radius:4px;padding:.75rem;grid-column:span 2;">
+              <div style="font-family:var(--ffd);font-size:1.5rem;font-weight:700;">50,000+</div>
+              <div style="font-size:.65rem;opacity:.7;">students reached</div>
+            </div>
+            <div style="background:#EBF3EE;border-radius:4px;padding:.75rem;">
+              <div style="font-family:var(--ffd);font-size:1.25rem;font-weight:700;color:#2D5A3D;">8,000+</div>
+              <div style="font-size:.65rem;color:#6B6B62;">volunteers</div>
+            </div>
+            <div style="background:#EBF3EE;border-radius:4px;padding:.75rem;">
+              <div style="font-family:var(--ffd);font-size:1.25rem;font-weight:700;color:#2D5A3D;">18</div>
+              <div style="font-size:.65rem;color:#6B6B62;">states</div>
+            </div>
+          </div>
+        </div>
+        <div class="m-section">
+          <div class="m-section-label">Programs</div>
+          <h2>What we do</h2>
+          <div class="m-cards">
+            <div class="m-card"><div class="m-card-icon">📚</div><div class="m-card-title">Tuition</div><div class="m-card-desc">Free classes for students</div></div>
+            <div class="m-card"><div class="m-card-icon">💻</div><div class="m-card-title">Digital</div><div class="m-card-desc">Computer literacy</div></div>
+            <div class="m-card"><div class="m-card-icon">🎓</div><div class="m-card-title">Scholarships</div><div class="m-card-desc">Guidance & support</div></div>
+          </div>
+        </div>
+        <div style="background:#1A1A18;color:#FAF8F4;padding:1.25rem;text-align:center;">
+          <div style="font-family:var(--ffd);font-size:1rem;font-weight:700;margin-bottom:.3rem;">Support our mission</div>
+          <div style="font-size:.7rem;opacity:.6;margin-bottom:.75rem;">Every rupee funds a child's education</div>
+          <span style="background:#C4622D;color:#FAF8F4;padding:.5rem 1.25rem;border-radius:4px;font-size:.75rem;cursor:pointer;">Donate Now →</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:.75rem;">
+      <div style="background:#fff;border:1px solid var(--b);border-radius:6px;padding:1rem;border-left:3px solid var(--clay);">
+        <div style="font-size:.7rem;font-weight:500;color:var(--clay);margin-bottom:.3rem;">① Navigation</div>
+        <div style="font-size:.75rem;color:var(--muted);">Sticky nav with max 5 links. "Volunteer" as CTA button — not a plain link. Hamburger on mobile.</div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--b);border-radius:6px;padding:1rem;border-left:3px solid var(--sage);">
+        <div style="font-size:.7rem;font-weight:500;color:var(--sage);margin-bottom:.3rem;">② Hero headline</div>
+        <div style="font-size:.75rem;color:var(--muted);">Serif display font for emotional impact. Italic light weight for "new wings" — the brand promise. Two CTAs: primary + secondary.</div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--b);border-radius:6px;padding:1rem;border-left:3px solid var(--sage);">
+        <div style="font-size:.7rem;font-weight:500;color:var(--sage);margin-bottom:.3rem;">③ Impact numbers</div>
+        <div style="font-size:.75rem;color:var(--muted);">Count-up animation on scroll. Dark sage card for the primary stat creates visual anchoring. Numbers build credibility instantly.</div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--b);border-radius:6px;padding:1rem;border-left:3px solid var(--clay);">
+        <div style="font-size:.7rem;font-weight:500;color:var(--clay);margin-bottom:.3rem;">④ Program cards</div>
+        <div style="font-size:.75rem;color:var(--muted);">3-column grid on desktop. Each card links directly to the relevant program section. Left border accent for visual hierarchy.</div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--b);border-radius:6px;padding:1rem;border-left:3px solid #534AB7;">
+        <div style="font-size:.7rem;font-weight:500;color:#534AB7;margin-bottom:.3rem;">⑤ Donate CTA</div>
+        <div style="font-size:.75rem;color:var(--muted);">Dark background creates strong visual separation. Clay CTA button is the only warm-colored element — grabs attention without competing with sage.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UX AUDIT -->
+<div class="panel" id="audit">
+  <h2>UX Audit — Existing NayePankh Site</h2>
+  <p style="color:var(--muted);font-size:.9rem;margin-bottom:1.5rem;">Analysis of current issues and recommended improvements.</p>
+
+  <h3>Issues Found</h3>
+  <div class="issues-grid">
+    <div class="issue-card">
+      <span class="issue-tag" style="background:#FCEBEB;color:#A32D2D;">High priority</span>
+      <div style="font-weight:500;margin-bottom:.4rem;">No beneficiary pathway</div>
+      <div style="font-size:.8rem;color:var(--muted);">The site assumes every visitor is a potential volunteer or donor. Students and parents who need help have no clear path. A "Get Help" CTA is missing entirely.</div>
+    </div>
+    <div class="issue-card">
+      <span class="issue-tag" style="background:#FCEBEB;color:#A32D2D;">High priority</span>
+      <div style="font-weight:500;margin-bottom:.4rem;">No dedicated internships page</div>
+      <div style="font-size:.8rem;color:var(--muted);">NayePankh runs one of India's most active student internship programs — yet there is no top-level page for it. Applicants have to search externally to find the tasks.</div>
+    </div>
+    <div class="issue-card">
+      <span class="issue-tag" style="background:#FAEEDA;color:#854F0B;">Medium priority</span>
+      <div style="font-weight:500;margin-bottom:.4rem;">Hero section lacks emotional pull</div>
+      <div style="font-size:.8rem;color:var(--muted);">The current hero uses generic NGO stock imagery and a minimal headline. It doesn't immediately communicate who is being helped, or why that should matter to the visitor.</div>
+    </div>
+    <div class="issue-card">
+      <span class="issue-tag" style="background:#FAEEDA;color:#854F0B;">Medium priority</span>
+      <div style="font-weight:500;margin-bottom:.4rem;">No impact numbers above the fold</div>
+      <div style="font-size:.8rem;color:var(--muted);">Stats like "50,000+ students reached" build trust fast. They are currently buried mid-page or absent. Placing them in the hero dramatically improves credibility for new visitors.</div>
+    </div>
+    <div class="issue-card">
+      <span class="issue-tag" style="background:#E6F1FB;color:#185FA5;">Low priority</span>
+      <div style="font-weight:500;margin-bottom:.4rem;">Mobile nav is hard to use</div>
+      <div style="font-size:.8rem;color:var(--muted);">On mobile, the navigation collapses but the tap targets are small. Primary CTAs like "Volunteer" should persist as a sticky bottom bar on mobile for easier access.</div>
+    </div>
+    <div class="issue-card">
+      <span class="issue-tag" style="background:#E6F1FB;color:#185FA5;">Low priority</span>
+      <div style="font-weight:500;margin-bottom:.4rem;">Colour contrast issues</div>
+      <div style="font-size:.8rem;color:var(--muted);">Some text on coloured backgrounds does not meet WCAG AA contrast ratio (4.5:1 minimum). Particularly grey text on light backgrounds. Needs audit and fixes.</div>
+    </div>
+  </div>
+
+  <h3>Before / After — Hero Section</h3>
+  <div class="before-after">
+    <div class="ba-panel">
+      <div class="ba-label before">✗ Before (current)</div>
+      <div style="background:#f0f0f0;border-radius:4px;padding:1.25rem;font-size:.8rem;color:#888;">
+        <div style="background:#ddd;height:120px;border-radius:4px;margin-bottom:.75rem;display:flex;align-items:center;justify-content:center;font-size:.7rem;">Generic stock photo</div>
+        <div style="font-weight:bold;font-size:1rem;margin-bottom:.4rem;color:#333;">NayePankh Foundation</div>
+        <div style="font-size:.75rem;margin-bottom:.75rem;">Making a difference in education</div>
+        <div style="background:#4caf50;color:#fff;padding:.4rem .75rem;border-radius:3px;font-size:.7rem;display:inline-block;">Join Us</div>
+      </div>
+      <ul style="margin-top:.75rem;font-size:.75rem;color:#A32D2D;list-style:none;display:flex;flex-direction:column;gap:.3rem;">
+        <li>✗ No impact numbers</li>
+        <li>✗ Generic headline</li>
+        <li>✗ No secondary CTA</li>
+        <li>✗ Stock imagery doesn't connect</li>
+      </ul>
+    </div>
+    <div class="ba-panel">
+      <div class="ba-label after">✓ After (proposed)</div>
+      <div style="background:#FAF8F4;border-radius:4px;padding:1.25rem;font-size:.8rem;">
+        <div style="font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:#C4622D;margin-bottom:.3rem;">NGO · India · Since 2020</div>
+        <div style="font-family:var(--ffd);font-size:1.2rem;font-weight:700;line-height:1.2;margin-bottom:.4rem;">Give every child<br><em style="font-style:italic;font-weight:300;color:#2D5A3D;">new wings</em> to fly.</div>
+        <div style="font-size:.7rem;color:#6B6B62;margin-bottom:.75rem;">Volunteer-driven NGO for education across India.</div>
+        <div style="display:flex;gap:.5rem;margin-bottom:.75rem;">
+          <span style="background:#2D5A3D;color:#FAF8F4;padding:.35rem .75rem;border-radius:3px;font-size:.7rem;">Become a Volunteer</span>
+          <span style="border:1px solid rgba(26,26,24,.15);padding:.35rem .75rem;border-radius:3px;font-size:.7rem;">Programs</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;">
+          <div style="background:#2D5A3D;color:#FAF8F4;padding:.6rem;border-radius:3px;grid-column:span 2;"><span style="font-family:var(--ffd);font-size:1.1rem;font-weight:700;">50,000+</span> <span style="font-size:.65rem;opacity:.7;"> students reached</span></div>
+          <div style="background:#EBF3EE;padding:.6rem;border-radius:3px;"><span style="font-family:var(--ffd);font-weight:700;color:#2D5A3D;">8,000+</span><div style="font-size:.65rem;color:#6B6B62;">volunteers</div></div>
+          <div style="background:#EBF3EE;padding:.6rem;border-radius:3px;"><span style="font-family:var(--ffd);font-weight:700;color:#2D5A3D;">18</span><div style="font-size:.65rem;color:#6B6B62;">states</div></div>
+        </div>
+      </div>
+      <ul style="margin-top:.75rem;font-size:.75rem;color:#3B6D11;list-style:none;display:flex;flex-direction:column;gap:.3rem;">
+        <li>✓ Impact stats above fold</li>
+        <li>✓ Distinctive serif headline</li>
+        <li>✓ Dual CTA for different users</li>
+        <li>✓ No stock imagery needed</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- MULTIPLE SCREENS -->
+<div class="panel" id="screens">
+  <h2>Multiple Screen Designs</h2>
+  <p style="color:var(--muted);font-size:.9rem;margin-bottom:1.5rem;">Mobile and desktop breakpoints for key screens.</p>
+
+  <h3>Mobile — Volunteer Form</h3>
+  <div style="max-width:320px;margin-bottom:2rem;">
+    <div class="device-frame">
+      <div class="device-bar" style="justify-content:center;">
+        <div style="background:#ddd;width:60px;height:6px;border-radius:3px;"></div>
+      </div>
+      <div style="padding:1.25rem;background:var(--cream);">
+        <div style="font-family:var(--ffd);font-size:1.1rem;font-weight:700;margin-bottom:.25rem;">Join us as a <em style="font-style:italic;font-weight:300;color:#2D5A3D;">volunteer</em></div>
+        <div style="font-size:.75rem;color:#6B6B62;margin-bottom:1.25rem;">Takes 3 minutes. No experience needed.</div>
+        <div style="display:flex;flex-direction:column;gap:.75rem;">
+          <div><div style="font-size:.65rem;font-weight:500;color:#6B6B62;margin-bottom:.2rem;">FULL NAME</div><div style="border:1px solid rgba(26,26,24,.15);border-radius:3px;padding:.55rem .75rem;font-size:.8rem;color:#999;">Priya Sharma</div></div>
+          <div><div style="font-size:.65rem;font-weight:500;color:#6B6B62;margin-bottom:.2rem;">EMAIL</div><div style="border:1px solid #2D5A3D;border-radius:3px;padding:.55rem .75rem;font-size:.8rem;">priya@example.com</div></div>
+          <div><div style="font-size:.65rem;font-weight:500;color:#6B6B62;margin-bottom:.2rem;">AREA OF INTEREST</div><div style="border:1px solid rgba(26,26,24,.15);border-radius:3px;padding:.55rem .75rem;font-size:.8rem;color:#999;">Education / Tutoring ↓</div></div>
+          <div style="background:#2D5A3D;color:#FAF8F4;text-align:center;padding:.7rem;border-radius:3px;font-size:.8rem;font-weight:500;">Submit Application →</div>
+        </div>
+      </div>
+      <div style="background:#EDEAE6;height:40px;display:flex;align-items:center;justify-content:center;gap:1.5rem;">
+        <div style="width:18px;height:18px;border:2px solid #999;border-radius:50%;"></div>
+        <div style="background:#999;border-radius:2px;width:20px;height:3px;"></div>
+        <div style="border-left:2px solid #999;border-top:2px solid #999;width:10px;height:10px;transform:rotate(45deg);"></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Desktop — Programs Grid</h3>
+  <div class="device-frame" style="margin-bottom:2rem;">
+    <div class="device-bar">
+      <div class="device-dot" style="background:#FF5F56;"></div>
+      <div class="device-dot" style="background:#FFBD2E;"></div>
+      <div class="device-dot" style="background:#27C93F;"></div>
+      <div style="flex:1;background:#fff;border-radius:3px;padding:.25rem .75rem;font-size:.65rem;color:#999;margin-left:.5rem;">nayepankh.com/programs</div>
+    </div>
+    <div style="padding:1.5rem;background:var(--cream);">
+      <div style="font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:#C4622D;margin-bottom:.3rem;">What we do</div>
+      <div style="font-family:var(--ffd);font-size:1.4rem;font-weight:700;margin-bottom:1.25rem;">Programs that create <em style="font-style:italic;font-weight:300;color:#2D5A3D;">real change</em></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;">
+        <div style="border:1px solid rgba(26,26,24,.1);border-left:3px solid #2D5A3D;border-radius:4px;padding:.85rem;">
+          <div style="font-size:1.1rem;margin-bottom:.35rem;">📖</div>
+          <div style="font-weight:500;font-size:.8rem;margin-bottom:.2rem;">Free Tuition</div>
+          <div style="font-size:.7rem;color:#6B6B62;">Class 1–12, all subjects, volunteer-taught.</div>
+        </div>
+        <div style="border:1px solid rgba(26,26,24,.1);border-left:3px solid #C4622D;border-radius:4px;padding:.85rem;">
+          <div style="font-size:1.1rem;margin-bottom:.35rem;">💻</div>
+          <div style="font-weight:500;font-size:.8rem;margin-bottom:.2rem;">Digital Literacy</div>
+          <div style="font-size:.7rem;color:#6B6B62;">Computer basics, internet safety, tools.</div>
+        </div>
+        <div style="border:1px solid rgba(26,26,24,.1);border-left:3px solid #534AB7;border-radius:4px;padding:.85rem;">
+          <div style="font-size:1.1rem;margin-bottom:.35rem;">🎓</div>
+          <div style="font-weight:500;font-size:.8rem;margin-bottom:.2rem;">Scholarships</div>
+          <div style="font-size:.7rem;color:#6B6B62;">Guidance on government scholarship applications.</div>
+        </div>
+        <div style="border:1px solid rgba(26,26,24,.1);border-left:3px solid #4A7C59;border-radius:4px;padding:.85rem;">
+          <div style="font-size:1.1rem;margin-bottom:.35rem;">🗣️</div>
+          <div style="font-weight:500;font-size:.8rem;margin-bottom:.2rem;">Spoken English</div>
+          <div style="font-size:.7rem;color:#6B6B62;">Communication skills for the workplace.</div>
+        </div>
+        <div style="border:1px solid rgba(26,26,24,.1);border-left:3px solid #D4537E;border-radius:4px;padding:.85rem;">
+          <div style="font-size:1.1rem;margin-bottom:.35rem;">♀️</div>
+          <div style="font-weight:500;font-size:.8rem;margin-bottom:.2rem;">Women Empowerment</div>
+          <div style="font-size:.7rem;color:#6B6B62;">Career, finance, and self-confidence programs.</div>
+        </div>
+        <div style="border:1px solid rgba(26,26,24,.1);border-left:3px solid #BA7517;border-radius:4px;padding:.85rem;">
+          <div style="font-size:1.1rem;margin-bottom:.35rem;">🧠</div>
+          <div style="font-weight:500;font-size:.8rem;margin-bottom:.2rem;">Mental Health</div>
+          <div style="font-size:.7rem;color:#6B6B62;">Awareness campaigns and peer support.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function show(id, tab) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  tab.classList.add('active');
+}
+</script>
+</body>
+</html>
