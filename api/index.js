@@ -8,14 +8,25 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Normalization Middleware: strip '/api' prefix if present to support all rewrites uniformly
+// Normalization Middleware: ensure req.url matches original client URL and strip '/api' prefix
 app.use((req, res, next) => {
-  if (req.url.startsWith('/api')) {
-    req.url = req.url.substring(4);
-    if (!req.url.startsWith('/')) {
-      req.url = '/' + req.url;
-    }
+  // Use req.originalUrl if present to bypass Vercel serverless rewrite modifications
+  const originalUrl = req.originalUrl || req.url;
+  
+  // Strip any query strings temporarily to check the path
+  const urlParts = originalUrl.split('?');
+  let path = urlParts[0];
+  const query = urlParts[1] ? '?' + urlParts[1] : '';
+
+  if (path.startsWith('/api')) {
+    path = path.substring(4);
   }
+  if (!path.startsWith('/')) {
+    path = '/' + path;
+  }
+
+  // Restore normalized url back to req.url for Express routing
+  req.url = path + query;
   next();
 });
 
