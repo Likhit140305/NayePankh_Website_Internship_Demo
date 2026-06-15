@@ -8,37 +8,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Normalization Middleware: ensure req.url matches original client URL and strip '/api' prefix
-app.use((req, res, next) => {
-  // Use req.originalUrl if present to bypass Vercel serverless rewrite modifications
-  const originalUrl = req.originalUrl || req.url;
-  
-  // Strip any query strings temporarily to check the path
-  const urlParts = originalUrl.split('?');
-  let path = urlParts[0];
-  const query = urlParts[1] ? '?' + urlParts[1] : '';
-
-  if (path.startsWith('/api')) {
-    path = path.substring(4);
-  }
-  if (!path.startsWith('/')) {
-    path = '/' + path;
-  }
-
-  // Restore normalized url back to req.url for Express routing
-  req.url = path + query;
-  next();
-});
-
-// API Routes
-app.use('/auth',       require('../routes/auth'));
-app.use('/volunteers', require('../routes/volunteers'));
-app.use('/programs',   require('../routes/programs'));
-app.use('/stats',      require('../routes/stats'));
-app.use('/ai',         require('../routes/ai'));
+// API Routes (mounted with /api prefix as routed by Vercel routes configuration)
+app.use('/api/auth',       require('../routes/auth'));
+app.use('/api/volunteers', require('../routes/volunteers'));
+app.use('/api/programs',   require('../routes/programs'));
+app.use('/api/stats',      require('../routes/stats'));
+app.use('/api/ai',         require('../routes/ai'));
 
 // API Docs (inline)
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.json({
     name: 'NayePankh Foundation API',
     version: '1.0.0',
