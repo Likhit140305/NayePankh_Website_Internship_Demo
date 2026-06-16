@@ -1,6 +1,7 @@
 // api/index.js
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 
@@ -47,6 +48,9 @@ app.get('/api', (req, res) => {
     },
   });
 });
+
+// Serve static files from the root directory (fallback for index.html, assets, and mnt/ sub-portals)
+app.use(express.static(path.join(__dirname, '..')));
 
 // 404 handler
 app.use((req, res) => res.status(404).json({ error: 'Route not found' }));
