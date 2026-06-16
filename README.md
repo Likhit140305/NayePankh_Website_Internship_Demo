@@ -1,124 +1,101 @@
-# NayePankh Foundation — Backend API
-### Volunteer Information Management System & AI Proxy Server
+# 📑 NayePankh Foundation — Digital Portal Project Report
+### 🚀 Developed by Likhit Hegde
+#### *A Comprehensive Volunteer Management System & AI-Driven Analytics Platform*
 
 ---
 
-## Setup & Run
+## 📋 1. Executive Summary
+
+This project implements a next-generation web portal and backend API for **NayePankh Foundation**, an Indian NGO dedicated to child education, women empowerment, and social welfare. The application has been fully refactored and optimized for deployment on **Vercel's serverless environment**, eliminating native database dependencies by implementing a mock in-memory database wrapper, and enabling direct request routing.
+
+---
+
+## 🎨 2. Core Portal Showcase
+
+### 🏠 Main Homepage (Zero-Config CDN served)
+The landing page features a premium, responsive design built with rich CSS aesthetics, clean typography (Outfit & Fraunces), custom theme toggling (Light/Dark mode), and micro-animations.
+
+![NayePankh Homepage](screenshots/homepage.png)
+
+---
+
+### 💬 Live AI Chatbot Assistant
+A floating chat widget powered by Google's Gemini 2.0 API. It allows prospective volunteers to ask questions about the NGO, receive immediate answers regarding open initiatives, and learn how to get involved.
+
+![AI Chatbot](screenshots/chatbot.png)
+
+---
+
+### 📊 Full-Stack Admin Dashboard
+A secure administrative control center that enables staff to view, filter, paginate, and delete volunteer applications, as well as export data directly to CSV reports.
+
+* **Credentials**: `admin@nayepankh.com` / `admin@123`
+
+![Admin Dashboard](screenshots/dashboard.png)
+
+---
+
+### 📈 Interactive Data Analytics Dashboard
+A visual reporting dashboard showcasing active volunteer demographics, fundraising channels, regional growth trends, and machine-learning predictions.
+
+![Analytics Dashboard](screenshots/analytics.png)
+
+---
+
+## ⚙️ 3. Portal Sub-Modules (Interactive Deliverables)
+
+The portal contains five specialized sub-portals accessible via the **Portals** dropdown in the navigation menu:
+
+1. **💬 AI Chatbot (`/mnt/user-data/outputs/nayepankh-ai/`)**: Chat assistant with custom system prompts built for NGO inquiries.
+2. **🤖 AI Screening Agents (`/mnt/user-data/outputs/nayepankh-agents/`)**: Specialized AI evaluators that review volunteer applications and score them based on fit.
+3. **✨ AI Personalised Web (`/mnt/user-data/outputs/nayepankh-aiweb/`)**: Dynamic content rendering engine that alters homepage layouts based on visitor personas.
+4. **📊 Full Stack Admin (`/mnt/user-data/outputs/nayepankh-fullstack/`)**: CRUD portal linked to the Node.js database endpoints.
+5. **📈 Analytics Dashboard (`/mnt/user-data/outputs/nayepankh-analytics/`)**: Beautiful charts built using custom canvas elements and analytics cards.
+
+---
+
+## 🛠️ 4. System Architecture & Technical Stack
+
+```mermaid
+graph TD
+    Client[Browser Client]
+    VercelEdge[Vercel CDN / Edge Network]
+    Serverless[Express Serverless Function]
+    DB[In-Memory Data Store]
+    Gemini[Google Gemini AI API]
+
+    Client -->|Static Assets / HTML| VercelEdge
+    Client -->|API / /api/*| Serverless
+    Serverless -->|Data Queries| DB
+    Serverless -->|Secure Chat Proxy| Gemini
+```
+
+### 💻 Technology Details:
+* **Frontend**: Vanilla HTML5, CSS3, ES6 JavaScript (Chart rendering via HTML Canvas, animations via CSS keyframes).
+* **Backend**: Node.js & Express.js.
+* **Database Driver**: Simulated in-memory SQL compiler mocking the `better-sqlite3` interface, removing native platform binary dependencies for serverless platforms.
+* **Deployment Platform**: Vercel Serverless (configured with `vercel.json` routing rewrites).
+* **Security**: JSON Web Tokens (JWT) for dashboard authorization, bcryptjs for admin credential hashing, and secure server-side API proxying to avoid exposing Gemini keys in frontend files.
+
+---
+
+## 🚀 5. Local Setup & Installation
+
+Follow these steps to run the application locally on your machine:
 
 ```bash
+# 1. Install dependencies
 npm install
 
-# (Optional) Set your Gemini API key in your environment:
-# On Windows (cmd): set GEMINI_API_KEY=your_key_here
-# On Windows (PowerShell): $env:GEMINI_API_KEY="your_key_here"
-# On Linux/macOS: export GEMINI_API_KEY="your_key_here"
+# 2. Configure Gemini API Key (Optional)
+# On Windows (cmd):
+set GEMINI_API_KEY=your_key_here
+# On Windows (PowerShell):
+$env:GEMINI_API_KEY="your_key_here"
 
-npm run dev       # development (nodemon)
-npm start         # production
+# 3. Start the application in development mode
+npm run dev
 ```
 
-Server starts at **http://localhost:3001**
-API docs at **http://localhost:3001/api**
-
----
-
-## Default Admin Credentials
-```
-Email:    admin@nayepankh.com
-Password: admin@123
-```
-
----
-
-## Authentication
-
-All protected routes require a Bearer token in the Authorization header.
-
-```bash
-# 1. Login to get token
-curl -X POST http://localhost:3001/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"admin@nayepankh.com","password":"admin@123"}'
-
-# 2. Use token in protected requests
-curl http://localhost:3001/api/volunteers \
-  -H "Authorization: Bearer <your_token>"
-```
-
----
-
-## API Endpoints
-
-### Auth
-| Method | Endpoint | Access | Description |
-|--------|----------|--------|-------------|
-| POST | `/api/auth/login` | Public | Get JWT token |
-| GET | `/api/auth/me` | Protected | Current admin info |
-
-### Volunteers
-| Method | Endpoint | Access | Description |
-|--------|----------|--------|-------------|
-| POST | `/api/volunteers/register` | Public | Register new volunteer |
-| GET | `/api/volunteers` | Protected | List with filters & pagination |
-| GET | `/api/volunteers/:id` | Protected | Get volunteer by ID |
-| PUT | `/api/volunteers/:id` | Protected | Update volunteer details |
-| PATCH | `/api/volunteers/:id/status` | Protected | Update status |
-| DELETE | `/api/volunteers/:id` | Protected | Delete volunteer |
-| GET | `/api/volunteers/export/csv` | Protected | Export CSV report |
-
-### Programs
-| Method | Endpoint | Access | Description |
-|--------|----------|--------|-------------|
-| GET | `/api/programs` | Public | List active programs |
-| POST | `/api/programs` | Protected | Create program |
-| DELETE | `/api/programs/:id` | Protected | Deactivate program |
-
-### Stats
-| Method | Endpoint | Access | Description |
-|--------|----------|--------|-------------|
-| GET | `/api/stats` | Protected | Dashboard statistics |
-
-### AI Integration (Secure Proxy)
-| Method | Endpoint | Access | Description |
-|--------|----------|--------|-------------|
-| POST | `/api/ai/generate` | Public | Securely routes Gemini AI requests using the server's `GEMINI_API_KEY` environment variable. |
-
----
-
-## AI Features & Key Management
-To prevent exposing your private API keys in client-side HTML/JS code (which is insecure and allows anyone to steal your key):
-1. **Server-Side Key**: Set the `GEMINI_API_KEY` environment variable on your deployment host (e.g. Render, Railway, Koyeb, etc.).
-2. **Client-Side Key (Optional)**: Users/evaluators can still enter their own keys in the frontend input fields if desired.
-3. **Graceful Fallbacks**: If no key is configured on either the server or client, the pages will automatically fallback to realistic interactive mock responses (Demo Mode) so the website remains fully functional.
-
----
-
-## Tech Stack
-- **Runtime**: Node.js
-- **Framework**: Express.js
-- **Database**: SQLite (via better-sqlite3) — zero config, file-based
-- **Auth**: JWT (jsonwebtoken) + bcryptjs for password hashing
-- **Export**: CSV generation
-- **AI Integration**: Google Gemini 2.0 Flash
-
-## Project Structure
-```
-nayepankh-backend/
-├── src/
-│   ├── server.js           # Express app entry point
-│   ├── db/
-│   │   └── database.js     # SQLite setup, schema, seeding
-│   ├── middleware/
-│   │   └── auth.js         # JWT auth middleware
-│   └── routes/
-│       ├── auth.js         # Login, /me
-│       ├── volunteers.js   # Full CRUD + CSV export
-│       ├── programs.js     # Programs CRUD
-│       ├── stats.js        # Dashboard stats
-│       └── ai.js           # Secure Gemini AI proxy
-├── public/
-│   └── logo.png
-├── package.json
-├── README.md
-└── mnt/                    # Sub-pages and domain prototypes
-```
+* **Local Address**: `http://localhost:3001`
+* **API Documentation**: `http://localhost:3001/api`
