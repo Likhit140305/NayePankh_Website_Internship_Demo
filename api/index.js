@@ -8,6 +8,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Debug Middleware: Append ?debug=true to any URL to print routing variables
+app.use((req, res, next) => {
+  if (req.query.debug === 'true') {
+    return res.json({
+      url: req.url,
+      originalUrl: req.originalUrl,
+      headers: req.headers
+    });
+  }
+  next();
+});
+
 // Normalization Middleware: ensure req.url matches original client URL for Express routing
 app.use((req, res, next) => {
   if (req.originalUrl) {
