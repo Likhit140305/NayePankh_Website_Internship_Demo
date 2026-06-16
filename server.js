@@ -64,7 +64,11 @@ app.use((err, req, res, next) => {
 });
 
 // ── Start ────────────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`\n🌱 NayePankh Backend running at http://localhost:${PORT}`);
-  console.log(`📖 API docs at http://localhost:${PORT}/api\n`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`🌱 NayePankh Backend running at http://localhost:${PORT}`);
+    console.log(`📖 API docs at http://localhost:${PORT}/api\n`);
+  });
+}
+
+module.exports = app;

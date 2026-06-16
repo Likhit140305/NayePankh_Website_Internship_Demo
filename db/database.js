@@ -1,48 +1,43 @@
-const fs = require('fs');
-const path = require('path');
 const bcrypt = require('bcryptjs');
 
-const isServerless = process.env.VERCEL || process.env.NOW_REGION || false;
-let DB_PATH = path.join(__dirname, '..', 'nayepankh.json');
-
-// Initialize store
-let store = {
+// In-Memory Data Store (no physical database file)
+const store = {
   admins: [],
   volunteers: [],
   programs: []
 };
 
-// If in serverless environment, copy seed file to /tmp and use it
-if (isServerless) {
-  const tmpPath = path.join('/tmp', 'nayepankh.json');
-  try {
-    if (!fs.existsSync(tmpPath)) {
-      if (fs.existsSync(DB_PATH)) {
-        fs.copyFileSync(DB_PATH, tmpPath);
-      }
-    }
-    DB_PATH = tmpPath;
-  } catch (err) {
-    console.error('Failed to copy database to /tmp:', err);
-  }
-}
+// ── Seeding Default Data ──────────────────────────────────────────────────
+const hash = bcrypt.hashSync('admin@123', 10);
+store.admins.push({
+  id: 1,
+  name: 'NayePankh Admin',
+  email: 'admin@nayepankh.com',
+  password: hash,
+  created_at: new Date().toISOString()
+});
 
-// Load existing data if available
-if (fs.existsSync(DB_PATH)) {
-  try {
-    store = JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
-  } catch (e) {
-    console.error('Failed to read database file, initializing empty:', e);
-  }
-}
+store.programs = [
+  { id: 1, name: 'Free Tuition Initiative', description: 'One-on-one and group tutoring sessions for students from Class 1 to 12, taught by our volunteers.', icon: '📖', is_active: 1, created_at: new Date().toISOString() },
+  { id: 2, name: 'Digital Literacy',        description: 'Teaching basic computer skills, internet safety, and digital tools to first-generation learners.', icon: '💻', is_active: 1, created_at: new Date().toISOString() },
+  { id: 3, name: 'Scholarship Guidance',    description: 'Helping students discover and apply for government scholarships and financial aid programs.',    icon: '🎓', is_active: 1, created_at: new Date().toISOString() },
+  { id: 4, name: 'Spoken English',          description: 'Confidence-building English communication classes for young adults entering the workforce.',       icon: '🗣️', is_active: 1, created_at: new Date().toISOString() },
+  { id: 5, name: 'Women Empowerment',       description: 'Workshops and mentorship programs specifically designed for girls and young women.',               icon: '♀️', is_active: 1, created_at: new Date().toISOString() },
+  { id: 6, name: 'Mental Health Awareness', description: 'Awareness campaigns and peer support groups addressing student stress, anxiety, and wellbeing.',  icon: '🧠', is_active: 1, created_at: new Date().toISOString() },
+];
 
-function save() {
-  try {
-    fs.writeFileSync(DB_PATH, JSON.stringify(store, null, 2), 'utf8');
-  } catch (err) {
-    console.error('Database write error (read-only environment):', err.message);
-  }
-}
+store.volunteers = [
+  { id: 1, first_name:'Priya',  last_name:'Sharma', email:'priya@example.com',  phone:'+91 98765 43210', city:'Delhi',     college:'Delhi University',  area:'Education / Tutoring',   availability:'3-6 hours',  motivation:'Passionate about teaching underprivileged children.', status:'active',   created_at:'2025-01-15' },
+  { id: 2, first_name:'Rahul',  last_name:'Singh',  email:'rahul@example.com',  phone:'+91 87654 32109', city:'Mumbai',    college:'IIT Bombay',        area:'Tech / Development',     availability:'6-10 hours', motivation:'Want to use tech skills for social good.',            status:'active',   created_at:'2025-01-22' },
+  { id: 3, first_name:'Aisha',  last_name:'Khan',   email:'aisha@example.com',  phone:'+91 76543 21098', city:'Bangalore', college:'Christ University',  area:'Design / Creative',      availability:'1-3 hours',  motivation:'Love creating impactful designs.',                   status:'pending',  created_at:'2025-02-03' },
+  { id: 4, first_name:'Vikram', last_name:'Patel',  email:'vikram@example.com', phone:'+91 65432 10987', city:'Pune',      college:'Pune University',   area:'Content & Social Media', availability:'3-6 hours',  motivation:'Social media strategy for NGOs interests me.',       status:'pending',  created_at:'2025-02-11' },
+  { id: 5, first_name:'Sneha',  last_name:'Reddy',  email:'sneha@example.com',  phone:'+91 54321 09876', city:'Hyderabad', college:'BITS Pilani',        area:'Women Empowerment',      availability:'6-10 hours', motivation:'Empowering women through education.',                status:'active',   created_at:'2025-02-20' },
+  { id: 6, first_name:'Arjun',  last_name:'Nair',   email:'arjun@example.com',  phone:'+91 43210 98765', city:'Kochi',     college:'NIT Calicut',       area:'Education / Tutoring',   availability:'3-6 hours',  motivation:'Teaching is my calling.',                             status:'active',   created_at:'2025-03-01' },
+  { id: 7, first_name:'Meera',  last_name:'Joshi',  email:'meera@example.com',  phone:'+91 32109 87654', city:'Jaipur',    college:'MNIT Jaipur',       area:'Fundraising',            availability:'1-3 hours',  motivation:'Helping raise funds for a good cause.',              status:'inactive', created_at:'2025-03-10' },
+  { id: 8, first_name:'Dev',    last_name:'Kumar',  email:'dev@example.com',    phone:'+91 21098 76543', city:'Chennai',   college:'IIT Madras',        area:'Digital Literacy',       availability:'10+ hours',  motivation:'Bridging the digital divide.',                       status:'active',   created_at:'2025-03-18' },
+];
+
+console.log('🌱 Seeded in-memory data store for Vercel.');
 
 // ── Database API Mocking better-sqlite3 ──────────────────────────────────
 const db = {
@@ -50,9 +45,7 @@ const db = {
   exec: () => {},
   transaction: (fn) => {
     return (...args) => {
-      const res = fn(...args);
-      save();
-      return res;
+      return fn(...args);
     };
   },
   prepare: (sql) => {
@@ -271,53 +264,11 @@ const db = {
           }
         }
 
-        save();
         return { lastInsertRowid, changes };
       }
     };
   }
 };
-
-// ── Seeding Default Data ──────────────────────────────────────────────────
-if (store.admins.length === 0) {
-  const hash = bcrypt.hashSync('admin@123', 10);
-  store.admins.push({
-    id: 1,
-    name: 'NayePankh Admin',
-    email: 'admin@nayepankh.com',
-    password: hash,
-    created_at: new Date().toISOString()
-  });
-  console.log('🔐 Default admin seeded: admin@nayepankh.com / admin@123');
-}
-
-if (store.programs.length === 0) {
-  store.programs = [
-    { id: 1, name: 'Free Tuition Initiative', description: 'One-on-one and group tutoring sessions for students from Class 1 to 12, taught by our volunteers.', icon: '📖', is_active: 1, created_at: new Date().toISOString() },
-    { id: 2, name: 'Digital Literacy',        description: 'Teaching basic computer skills, internet safety, and digital tools to first-generation learners.', icon: '💻', is_active: 1, created_at: new Date().toISOString() },
-    { id: 3, name: 'Scholarship Guidance',    description: 'Helping students discover and apply for government scholarships and financial aid programs.',    icon: '🎓', is_active: 1, created_at: new Date().toISOString() },
-    { id: 4, name: 'Spoken English',          description: 'Confidence-building English communication classes for young adults entering the workforce.',       icon: '🗣️', is_active: 1, created_at: new Date().toISOString() },
-    { id: 5, name: 'Women Empowerment',       description: 'Workshops and mentorship programs specifically designed for girls and young women.',               icon: '♀️', is_active: 1, created_at: new Date().toISOString() },
-    { id: 6, name: 'Mental Health Awareness', description: 'Awareness campaigns and peer support groups addressing student stress, anxiety, and wellbeing.',  icon: '🧠', is_active: 1, created_at: new Date().toISOString() },
-  ];
-  console.log('📚 Default programs seeded');
-}
-
-if (store.volunteers.length === 0) {
-  store.volunteers = [
-    { id: 1, first_name:'Priya',  last_name:'Sharma', email:'priya@example.com',  phone:'+91 98765 43210', city:'Delhi',     college:'Delhi University',  area:'Education / Tutoring',   availability:'3-6 hours',  motivation:'Passionate about teaching underprivileged children.', status:'active',   created_at:'2025-01-15' },
-    { id: 2, first_name:'Rahul',  last_name:'Singh',  email:'rahul@example.com',  phone:'+91 87654 32109', city:'Mumbai',    college:'IIT Bombay',        area:'Tech / Development',     availability:'6-10 hours', motivation:'Want to use tech skills for social good.',            status:'active',   created_at:'2025-01-22' },
-    { id: 3, first_name:'Aisha',  last_name:'Khan',   email:'aisha@example.com',  phone:'+91 76543 21098', city:'Bangalore', college:'Christ University',  area:'Design / Creative',      availability:'1-3 hours',  motivation:'Love creating impactful designs.',                   status:'pending',  created_at:'2025-02-03' },
-    { id: 4, first_name:'Vikram', last_name:'Patel',  email:'vikram@example.com', phone:'+91 65432 10987', city:'Pune',      college:'Pune University',   area:'Content & Social Media', availability:'3-6 hours',  motivation:'Social media strategy for NGOs interests me.',       status:'pending',  created_at:'2025-02-11' },
-    { id: 5, first_name:'Sneha',  last_name:'Reddy',  email:'sneha@example.com',  phone:'+91 54321 09876', city:'Hyderabad', college:'BITS Pilani',        area:'Women Empowerment',      availability:'6-10 hours', motivation:'Empowering women through education.',                status:'active',   created_at:'2025-02-20' },
-    { id: 6, first_name:'Arjun',  last_name:'Nair',   email:'arjun@example.com',  phone:'+91 43210 98765', city:'Kochi',     college:'NIT Calicut',       area:'Education / Tutoring',   availability:'3-6 hours',  motivation:'Teaching is my calling.',                             status:'active',   created_at:'2025-03-01' },
-    { id: 7, first_name:'Meera',  last_name:'Joshi',  email:'meera@example.com',  phone:'+91 32109 87654', city:'Jaipur',    college:'MNIT Jaipur',       area:'Fundraising',            availability:'1-3 hours',  motivation:'Helping raise funds for a good cause.',              status:'inactive', created_at:'2025-03-10' },
-    { id: 8, first_name:'Dev',    last_name:'Kumar',  email:'dev@example.com',    phone:'+91 21098 76543', city:'Chennai',   college:'IIT Madras',        area:'Digital Literacy',       availability:'10+ hours',  motivation:'Bridging the digital divide.',                       status:'active',   created_at:'2025-03-18' },
-  ];
-  console.log('👥 Sample volunteers seeded');
-}
-
-save();
 
 // Filtering Helper
 function filterVolunteers(params, sql) {
