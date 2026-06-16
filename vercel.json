@@ -1,11 +1,58 @@
 {
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "design-system.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "logo_new.png",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "children_smiles.png",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "hero_bg.png",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "quote_kids.png",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "volunteers_group.jpg",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "paper_boats.jpg",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "mnt/**/*",
+      "use": "@vercel/static"
+    }
+  ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/index.js"
+      "dest": "api/index.js"
     },
     {
       "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "$1"
     }
   ]
 }
